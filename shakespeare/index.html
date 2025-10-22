@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shakespeare Tabular Search</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 1rem; }
+    input[type="text"] { padding: 0.5rem; font-size: 1rem; width: 26rem; }
+    select, button { padding: 0.4rem; font-size: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+    th { background: #f5f5f5; position: sticky; top: 0; cursor: pointer; user-select: none; }
+    th:hover { background: #e8e8e8; }
+    th.sorted-asc::after { content: ' ▲'; color: #666; }
+    th.sorted-desc::after { content: ' ▼'; color: #666; }
+    .controls { display:flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: .5rem; }
+    .muted { color: #666; font-size: 0.9rem; }
+    .chip { display:inline-block; padding: 0 .5rem; background:#eef; border-radius:.5rem; }
+    #playsFilter { max-height: 8rem; overflow:auto; border:1px solid #ddd; padding:.5rem; }
+    #details { margin-top: 1rem; }
+    .hit { background: yellow; }
+    .sr { font-size: .9rem; color: #333; }
+    .warning { color: #d63; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>Shakespeare Tabular Search</h1>
+  <p class="muted">Search single words, bigrams, or trigrams. Use regex patterns (e.g., <code>love.*thee</code>) or literal text.</p>
+
+  <div class="controls">
+    <label>Query <input id="q" type="text" placeholder="e.g., blood | mortal coil | love.*thee"></label>
+    <label>Granularity
+      <select id="gran">
+        <option value="play">Play</option>
+        <option value="genre">Genre</option>
+        <option value="act">Act</option>
+        <option value="scene" selected>Scene</option>
+        <option value="character">Character</option>
+      </select>
+    </label>
+    <label title="Force search in specific n-gram index (auto-detects by default)">
+      N-gram:
+      <select id="ngramMode">
+        <option value="auto" selected>Auto</option>
+        <option value="1">Unigrams</option>
+        <option value="2">Bigrams</option>
+        <option value="3">Trigrams</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="useRegex"> Regex mode</label>
+    <button id="go">Search</button>
+    <span id="status" class="chip">loading…</span>
+    <span id="denom" class="muted"></span>
+  </div>
+
+  <details open>
+    <summary class="sr"><strong>Filter plays</strong> (default: all)</summary>
+    <div id="playsFilter"></div>
+  </details>
+
+  <table id="results">
+    <thead><tr id="headRow"></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="details"></div>
+
+<script>
+(async function() {
+  const status = document.getElementById('status');
+  const q = document.getElementById('q');
+  const gran = document.getElementById('gran');
+  const go = document.getElementById('go');
+  const useRegex = document.getElementById('useRegex');
+  const ngramMode = document.getElementById('ngramMode');
+  const playsFilter = document.getElementById('playsFilter');
+  const theadRow = document.getElementById('headRow');
+  const tbody = document.querySelector('#results tbody');
+  const details = document.getElementById('details');
+  const denomText = document.getElementById('denom');
+
+  async function loadJSON(path) {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status}`);
+    return res.json();
+  }
+
+  let chunks=[], tokens={}, tokens2={}, tokens3={}, plays=[], characters=[], tokensChar={}, tokensChar2={}, tokensChar3={};
+  try {
+    [chunks, tokens, tokens2, tokens3, plays, characters, tokensChar, tokensChar2, tokensChar3] = await Promise.all([
+      loadJSON('data/chunks.json'),
+      loadJSON('data/tokens.json'),
+      loadJSON('data/tokens2.json'),
+      loadJSON('data/tokens3.json'),
+      loadJSON('data/plays.json'),
+      loadJSON('data/characters.json'),
+      loadJSON('data/tokens_char.json'),
+      loadJSON('data/tokens_char2.json'),
+      loadJSON('data/tokens_char3.json'),
+    ]);
+    status.textContent = 'ready';
+  } catch(e) {
+    status.textContent = 'failed to load data';
+    console.error(e);
+    return;
+  }
+
+  const chunkById = new Map(chunks.map(r => [r.scene_id, r]));
+  const playsById = new Map(plays.map(p => [p.play_id, p]));
+  const charactersById = new Map(characters.map(c => [c.character_id, c]));
+
+  function renderPlayFilter() {
+    playsFilter.innerHTML = '';
+    for (const p of plays) {
+      const id = `play_${p.play_id}`;
+      const div = document.createElement('div');
+      div.innerHTML = `<label><input type="checkbox" id="${id}" data-play="${p.play_id}" checked> ${p.title} <span class="muted">(${p.genre || ''}${p.first_performance_year ? ', ' + p.first_performance_year : ''})</span></label>`;
+      playsFilter.appendChild(div);
+    }
+  }
+  renderPlayFilter();
+  function selectedPlayIds() {
+    const ids = [];
+    playsFilter.querySelectorAll('input[type="checkbox"]').forEach(cb => { if (cb.checked) ids.push(Number(cb.dataset.play)); });
+    return new Set(ids);
+  }
+  function fmtPct(num) { return (num*100).toFixed(2) + '%'; }
+
+  const actTotals = new Map();
+  const playTotals = new Map();
+  for (const r of chunks) {
+    const k = `${r.play_id}:${r.act}`;
+    actTotals.set(k, (actTotals.get(k)||0) + (r.total_words||0));
+    playTotals.set(r.play_id, (playTotals.get(r.play_id)||0) + (r.total_words||0));
+  }
+
+  let sortKey = null, sortDir = 'desc';
+  function setHeaders(cols){
+    theadRow.innerHTML='';
+    cols.forEach(c => {
+      const th = document.createElement('th');
+      th.textContent = c.label;
+      th.dataset.key = c.key;
+      th.title = 'Click to sort';
+      th.addEventListener('click', () => {
+        if (sortKey === c.key) sortDir = (sortDir === 'asc' ? 'desc' : 'asc');
+        else { sortKey = c.key; sortDir = c.defaultDir || 'desc'; }
+        renderRows(buildRows(q.value.trim()));
+      });
+      theadRow.appendChild(th);
+    });
+    updateSortIndicators();
+  }
+  
+  function updateSortIndicators(){
+    theadRow.querySelectorAll('th').forEach(th => {
+      th.classList.remove('sorted-asc', 'sorted-desc');
+      if (th.dataset.key === sortKey) {
+        th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+      }
+    });
+  }
+  function sortRows(rows){
+    if (!sortKey) return rows;
+    rows.sort((a,b) => {
+      const av = a[sortKey], bv = b[sortKey];
+      if (typeof av === 'string' || typeof bv === 'string') {
+        return sortDir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+      }
+      return sortDir === 'asc' ? (av - bv) : (bv - av);
+    });
+    return rows;
+  }
+
+  function denomFor(n, levelKey, meta){
+    const tw = (levelKey==='scene') ? (meta.total_words||0)
+               : (levelKey==='act') ? (actTotals.get(`${meta.play_id}:${meta.act}`)||0)
+               : (levelKey==='play') ? (playTotals.get(meta.play_id)||0)
+               : (levelKey==='character') ? (meta.total_words_spoken||0) : 0;
+    return Math.max(0, tw - (n-1));
+  }
+
+  function aggregatePostings(postingsArray, n) {
+    // Merge multiple token postings (for regex matches)
+    const merged = new Map();
+    for (const postings of postingsArray) {
+      for (const [id, count] of postings) {
+        merged.set(id, (merged.get(id) || 0) + count);
+      }
+    }
+    return Array.from(merged.entries());
+  }
+
+  function buildRows(query){
+    const isRegex = useRegex.checked;
+    const ngramModeVal = ngramMode.value;
+    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let n = Math.min(terms.length, 3);
+    
+    // Override n if user explicitly selected n-gram mode
+    if (ngramModeVal !== 'auto') {
+      n = parseInt(ngramModeVal);
+    }
+
+    const playsSel = selectedPlayIds();
+    const granVal = gran.value;
+
+    // Character view limitation
+    if (granVal === 'character' && n > 3) {
+      theadRow.innerHTML = '';
+      tbody.innerHTML = '<tr><td class="muted">Character view supports up to trigrams.</td></tr>';
+      return null;
+    }
+
+    const idx = (granVal === 'character') 
+      ? (n === 1 ? tokensChar : n === 2 ? tokensChar2 : tokensChar3)
+      : (n === 1 ? tokens : n === 2 ? tokens2 : tokens3);
+
+    let allPostings = [];
+
+    if (isRegex) {
+      // Regex mode: match pattern against all token keys
+      try {
+        const pattern = new RegExp(query.trim(), 'i');
+        const matchingKeys = Object.keys(idx).filter(k => pattern.test(k));
+        
+        if (matchingKeys.length === 0) {
+          theadRow.innerHTML = '';
+          tbody.innerHTML = '<tr><td class="muted">No tokens matched regex pattern.</td></tr>';
+          denomText.textContent = '';
+          return null;
+        }
+        
+        // Show warning if too many matches (performance)
+        if (matchingKeys.length > 1000) {
+          denomText.textContent = '⚠️ Pattern matched ' + matchingKeys.length + ' tokens (showing aggregated results)';
+        }
+
+        // Aggregate all matching tokens
+        allPostings = aggregatePostings(matchingKeys.map(k => idx[k]), n);
+      } catch (e) {
+        theadRow.innerHTML = '';
+        tbody.innerHTML = `<tr><td class="warning">Invalid regex: ${e.message}</td></tr>`;
+        return null;
+      }
+    } else {
+      // Literal mode: exact match
+      const key = terms.slice(0, n).join(' ');
+      allPostings = idx[key] || [];
+    }
+
+    const rows = [];
+
+    if (granVal==='scene'){
+      for (const [scene_id, count] of allPostings){
+        const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
+        const d = denomFor(n,'scene',m);
+        rows.push({ play_title: m.play_title, genre:m.genre, play_id:m.play_id, act:m.act, scene:m.scene, count, pct: d? count/d : 0, scene_id });
+      }
+      setHeaders([
+        {key:'play_title', label:'Play', defaultDir:'asc'},
+        {key:'act', label:'Act'},
+        {key:'scene', label:'Scene'},
+        {key:'count', label:'Count'},
+        {key:'pct', label:`% of ${n===1?'scene words':n===2?'scene bigrams':'scene trigrams'}`},
+      ]);
+      denomText.textContent = n===1?'Denominator: total words in scene':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in scene';
+      return rows;
+    }
+
+    if (granVal==='act'){
+      const tmp = new Map();
+      for (const [scene_id,c] of allPostings){
+        const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
+        const k = `${m.play_id}:${m.act}`;
+        tmp.set(k, (tmp.get(k)||0) + c);
+      }
+      for (const [k,count] of tmp.entries()){
+        const [pid, actNum] = k.split(':').map(Number);
+        const play = playsById.get(pid);
+        const denom = denomFor(n,'act',{play_id:pid,act:actNum});
+        rows.push({ play_title: play.title, genre:play.genre, play_id:pid, act:actNum, count, pct: denom? count/denom : 0 });
+      }
+      setHeaders([
+        {key:'play_title', label:'Play', defaultDir:'asc'},
+        {key:'act', label:'Act'},
+        {key:'count', label:'Count'},
+        {key:'pct', label:`% of ${n===1?'act words':n===2?'act bigrams':'act trigrams'}`},
+      ]);
+      denomText.textContent = n===1?'Denominator: total words in act':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in act';
+      return rows;
+    }
+
+    if (granVal==='play'){
+      const tmp = new Map();
+      for (const [scene_id,c] of allPostings){
+        const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
+        tmp.set(m.play_id, (tmp.get(m.play_id)||0) + c);
+      }
+      for (const [pid,count] of tmp.entries()){
+        const p = playsById.get(pid);
+        const denom = denomFor(n,'play',{play_id:pid});
+        const num_lines = p.total_lines ?? 0;
+        const total_words = p.total_words ?? 0;
+        rows.push({ title:p.title, genre:p.genre, first_year:p.first_performance_year||'', num_lines, total_words, count, pct: denom? count/denom : 0 });
+      }
+      setHeaders([
+        {key:'title', label:'Play', defaultDir:'asc'},
+        {key:'genre', label:'Genre', defaultDir:'asc'},
+        {key:'first_year', label:'Year'},
+        {key:'num_lines', label:'# lines'},
+        {key:'total_words', label:'Word count'},
+        {key:'count', label:'Count'},
+        {key:'pct', label:`% of ${n===1?'play words':n===2?'play bigrams':'play trigrams'}`},
+      ]);
+      denomText.textContent = n===1?'Denominator: total words in play':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in play';
+      return rows;
+    }
+
+    if (granVal==='genre'){
+      const tmp = new Map();
+      const genreTotals = new Map();
+      // Aggregate counts and totals by genre
+      for (const [scene_id,c] of allPostings){
+        const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
+        const genre = m.genre || 'unknown';
+        tmp.set(genre, (tmp.get(genre)||0) + c);
+        genreTotals.set(genre, (genreTotals.get(genre)||0) + (m.total_words||0));
+      }
+      for (const [genre,count] of tmp.entries()){
+        const totalWords = genreTotals.get(genre) || 0;
+        const denom = Math.max(0, totalWords - (n-1));
+        rows.push({ genre, total_words: totalWords, count, pct: denom? count/denom : 0 });
+      }
+      setHeaders([
+        {key:'genre', label:'Genre', defaultDir:'asc'},
+        {key:'total_words', label:'Word count'},
+        {key:'count', label:'Count'},
+        {key:'pct', label:`% of ${n===1?'genre words':n===2?'genre bigrams':'genre trigrams'}`},
+      ]);
+      denomText.textContent = n===1?'Denominator: total words in genre':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in genre';
+      return rows;
+    }
+
+    if (granVal==='character'){
+      for (const [char_id, count] of allPostings){
+        const c = charactersById.get(char_id);
+        if (!c || !playsSel.has(c.play_id)) continue;
+        const denom = denomFor(n,'character',c);
+        rows.push({ play_title:c.play_title, name:c.name, total_words_spoken:c.total_words_spoken||0, count, pct: denom? count/denom : 0 });
+      }
+      setHeaders([
+        {key:'play_title', label:'Play', defaultDir:'asc'},
+        {key:'name', label:'Character', defaultDir:'asc'},
+        {key:'count', label:'Count'},
+        {key:'pct', label:`% of character ${n===1?'words':n===2?'bigrams':'trigrams'}`},
+        {key:'total_words_spoken', label:'Char. total words'},
+      ]);
+      denomText.textContent = n===1?'Denominator: total words spoken by character':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' spoken by character';
+      return rows;
+    }
+  }
+
+  function renderRows(rows){
+    tbody.innerHTML='';
+    if (!rows || rows.length===0){ tbody.innerHTML = '<tr><td colspan="8" class="muted">No results.</td></tr>'; return; }
+    rows = sortRows(rows);
+    updateSortIndicators();
+    const cols = Array.from(theadRow.children).map(th => th.dataset.key);
+    for (const r of rows) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = cols.map(k => `<td>${(k==='pct') ? fmtPct(r[k]||0) : (r[k] ?? '')}</td>`).join('');
+      tbody.appendChild(tr);
+    }
+  }
+
+  function doSearch(){
+    const query = q.value.trim();
+    if (!query){ tbody.innerHTML = ''; details.innerHTML=''; denomText.textContent=''; return; }
+    sortKey = 'count';
+    sortDir = 'desc';
+    const rows = buildRows(query);
+    if (rows) renderRows(rows);
+  }
+
+  go.addEventListener('click', doSearch);
+  q.addEventListener('keydown', e => { if (e.key==='Enter') doSearch(); });
+
+  // Auto-detect regex patterns
+  q.addEventListener('input', () => {
+    const val = q.value;
+    const hasRegexChars = /[.*+?^${}()|[\]\\]/.test(val);
+    if (hasRegexChars && !useRegex.checked) {
+      useRegex.checked = true;
+    }
+  });
+
+  // initial state
+  gran.value = 'play';
+  q.value = 'mortal coil';
+  doSearch();
+})();
+</script>
+</body>
+</html>

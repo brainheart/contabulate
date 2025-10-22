@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Template - Contabulate</title>
+    <meta name="description" content="Template for displaying literary data in tables">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="shakespeare.css">
+    <style>
+        /* Additional table-specific styling */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .filter-controls {
+            background: white;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filter-controls h4 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        
+        .sortable:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sortable::after {
+            content: " ↕";
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="site-title"><a href="../">Contabulate</a></h1>
+                <p class="site-subtitle">Literary Data Table Template</p>
+                <ul class="nav-menu">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../shakespeare/">Shakespeare</a></li>
+                    <li><a href="#table">Data Table</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2>Literary Data Table Template</h2>
+                <p class="lead">This template demonstrates how to structure and style literary data for optimal exploration and analysis.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <h3>Shakespeare Character Analysis Example</h3>
+                
+                <!-- Filter Controls -->
+                <div class="filter-controls">
+                    <h4>Filter and Search</h4>
+                    <div class="filter-group">
+                        <label for="play-filter">Play:</label>
+                        <select id="play-filter">
+                            <option value="">All Plays</option>
+                            <option value="hamlet">Hamlet</option>
+                            <option value="macbeth">Macbeth</option>
+                            <option value="lear">King Lear</option>
+                            <option value="othello">Othello</option>
+                        </select>
+                        
+                        <label for="type-filter">Character Type:</label>
+                        <select id="type-filter">
+                            <option value="">All Types</option>
+                            <option value="protagonist">Protagonist</option>
+                            <option value="antagonist">Antagonist</option>
+                            <option value="supporting">Supporting</option>
+                            <option value="minor">Minor</option>
+                        </select>
+                        
+                        <label for="search">Search:</label>
+                        <input type="text" id="search" placeholder="Character name...">
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-container">
+                    <table class="data-table shakespeare-table" id="character-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-column="character">Character</th>
+                                <th class="sortable" data-column="play">Play</th>
+                                <th class="sortable" data-column="type">Type</th>
+                                <th class="sortable" data-column="lines">Lines</th>
+                                <th class="sortable" data-column="scenes">Scenes</th>
+                                <th class="sortable" data-column="first-appearance">First Appearance</th>
+                                <th>Key Relationships</th>
+                                <th>Themes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="character-name">Hamlet</td>
+                                <td class="play-title">Hamlet</td>
+                                <td>Protagonist</td>
+                                <td>1,569</td>
+                                <td>15</td>
+                                <td class="act-scene">Act I, Scene ii</td>
+                                <td>Claudius (uncle), Gertrude (mother), Ophelia (love interest)</td>
+                                <td>Revenge, Madness, Mortality</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Macbeth</td>
+                                <td class="play-title">Macbeth</td>
+                                <td>Protagonist</td>
+                                <td>719</td>
+                                <td>16</td>
+                                <td class="act-scene">Act I, Scene ii</td>
+                                <td>Lady Macbeth (wife), Duncan (king), Banquo (friend)</td>
+                                <td>Ambition, Guilt, Fate</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Lady Macbeth</td>
+                                <td class="play-title">Macbeth</td>
+                                <td>Supporting</td>
+                                <td>259</td>
+                                <td>9</td>
+                                <td class="act-scene">Act I, Scene v</td>
+                                <td>Macbeth (husband)</td>
+                                <td>Ambition, Manipulation, Guilt</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Iago</td>
+                                <td class="play-title">Othello</td>
+                                <td>Antagonist</td>
+                                <td>1,097</td>
+                                <td>15</td>
+                                <td class="act-scene">Act I, Scene i</td>
+                                <td>Othello (general), Desdemona (victim), Cassio (rival)</td>
+                                <td>Deception, Jealousy, Evil</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">King Lear</td>
+                                <td class="play-title">King Lear</td>
+                                <td>Protagonist</td>
+                                <td>757</td>
+                                <td>13</td>
+                                <td class="act-scene">Act I, Scene i</td>
+                                <td>Goneril, Regan, Cordelia (daughters), Gloucester (earl)</td>
+                                <td>Power, Family, Justice</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Cordelia</td>
+                                <td class="play-title">King Lear</td>
+                                <td>Supporting</td>
+                                <td>115</td>
+                                <td>4</td>
+                                <td class="act-scene">Act I, Scene i</td>
+                                <td>King Lear (father), France (husband)</td>
+                                <td>Truth, Loyalty, Justice</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Ophelia</td>
+                                <td class="play-title">Hamlet</td>
+                                <td>Supporting</td>
+                                <td>171</td>
+                                <td>8</td>
+                                <td class="act-scene">Act I, Scene iii</td>
+                                <td>Hamlet (love interest), Polonius (father), Laertes (brother)</td>
+                                <td>Madness, Innocence, Tragedy</td>
+                            </tr>
+                            <tr>
+                                <td class="character-name">Claudius</td>
+                                <td class="play-title">Hamlet</td>
+                                <td>Antagonist</td>
+                                <td>541</td>
+                                <td>11</td>
+                                <td class="act-scene">Act I, Scene ii</td>
+                                <td>Hamlet (nephew), Gertrude (wife), Ghost (victim)</td>
+                                <td>Guilt, Power, Corruption</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-info">
+                    <h4>Understanding the Data</h4>
+                    <p>This table demonstrates how literary analysis can be enhanced through structured data presentation. Each row represents a character with quantifiable metrics (lines spoken, scenes appeared) alongside qualitative analysis (relationships, themes).</p>
+                    
+                    <h5>Column Explanations:</h5>
+                    <ul>
+                        <li><strong>Lines:</strong> Total number of lines spoken by the character</li>
+                        <li><strong>Scenes:</strong> Number of scenes in which the character appears</li>
+                        <li><strong>First Appearance:</strong> Act and scene of character's introduction</li>
+                        <li><strong>Key Relationships:</strong> Primary character connections that drive plot</li>
+                        <li><strong>Themes:</strong> Major thematic elements associated with the character</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Contabulate. Literary data exploration template.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Basic table sorting functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('character-table');
+            const headers = table.querySelectorAll('.sortable');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.dataset.column;
+                    sortTable(table, column);
+                });
+            });
+        });
+
+        function sortTable(table, column) {
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                const aValue = getCellValue(a, column);
+                const bValue = getCellValue(b, column);
+                
+                if (!isNaN(aValue) && !isNaN(bValue)) {
+                    return aValue - bValue;
+                }
+                
+                return aValue.localeCompare(bValue);
+            });
+            
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function getCellValue(row, column) {
+            const cells = row.querySelectorAll('td');
+            const columnIndex = getColumnIndex(column);
+            return cells[columnIndex]?.textContent?.trim() || '';
+        }
+
+        function getColumnIndex(column) {
+            const columnMap = {
+                'character': 0,
+                'play': 1,
+                'type': 2,
+                'lines': 3,
+                'scenes': 4,
+                'first-appearance': 5
+            };
+            return columnMap[column] || 0;
+        }
+    </script>
+</body>
+</html>
