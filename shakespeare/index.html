@@ -5,80 +5,488 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shakespeare Tabular Search</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 1rem; }
-    input[type="text"] { padding: 0.5rem; font-size: 1rem; width: 26rem; }
-    select, button { padding: 0.4rem; font-size: 1rem; }
-    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
-    th { background: #f5f5f5; position: sticky; top: 0; cursor: pointer; user-select: none; }
-    th:hover { background: #e8e8e8; }
-    th.sorted-asc::after { content: ' ▲'; color: #666; }
-    th.sorted-desc::after { content: ' ▼'; color: #666; }
-    .controls { display:flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: .5rem; }
-    .muted { color: #666; font-size: 0.9rem; }
-    .chip { display:inline-block; padding: 0 .5rem; background:#eef; border-radius:.5rem; }
-    #playsFilter { max-height: 8rem; overflow:auto; border:1px solid #ddd; padding:.5rem; }
-    #details { margin-top: 1rem; }
-    .hit { background: yellow; }
-    .sr { font-size: .9rem; color: #333; }
-    .warning { color: #d63; font-size: .9rem; }
+    :root {
+      --parchment: #f9f7f1;
+      --ink: #2b2b2b;
+      --burgundy: #8b1538;
+      --gold: #d4af37;
+      --border: #d4c5b0;
+      --shadow: rgba(43, 43, 43, 0.08);
+    }
+    body { 
+      font-family: 'Crimson Text', 'Georgia', 'Garamond', serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(to bottom, var(--parchment) 0%, #fefdfb 100%);
+      color: var(--ink);
+      line-height: 1.6;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 { 
+      font-family: 'Cinzel', 'Georgia', serif;
+      color: var(--burgundy);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(139, 21, 56, 0.1);
+    }
+    h1 a {
+      color: var(--burgundy);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    h1 a:hover {
+      border-bottom-color: var(--gold);
+    }
+    code {
+      background: rgba(212, 175, 55, 0.1);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+    input[type="text"] { 
+      padding: 0.6rem 0.8rem;
+      font-size: 1rem;
+      width: 26rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      font-family: 'Georgia', serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--burgundy);
+      box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+    }
+    select, button { 
+      padding: 0.5rem 0.8rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button {
+      background: var(--burgundy);
+      color: white;
+      border-color: var(--burgundy);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    button:hover {
+      background: #6d1028;
+      box-shadow: 0 2px 4px var(--shadow);
+    }
+    select:hover {
+      border-color: var(--burgundy);
+    }
+    table { 
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1rem;
+      background: white;
+      box-shadow: 0 1px 3px var(--shadow);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    th, td { 
+      border: 1px solid var(--border);
+      padding: 0.7rem 0.8rem;
+      text-align: left;
+    }
+    th { 
+      background: linear-gradient(to bottom, #faf8f3 0%, #f0ede5 100%);
+      position: sticky;
+      top: 0;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      color: var(--burgundy);
+      letter-spacing: 0.3px;
+      font-size: 0.95rem;
+      border-bottom: 2px solid var(--border);
+    }
+    th:hover { 
+      background: linear-gradient(to bottom, #f5f2ea 0%, #e8e4d8 100%);
+    }
+    th.sorted-asc::after { content: ' ▲'; color: var(--burgundy); }
+    th.sorted-desc::after { content: ' ▼'; color: var(--burgundy); }
+    tbody tr:hover {
+      background: rgba(212, 175, 55, 0.05);
+    }
+    tbody tr:nth-child(even) {
+      background: rgba(249, 247, 241, 0.3);
+    }
+    tbody tr:nth-child(even):hover {
+      background: rgba(212, 175, 55, 0.08);
+    }
+    .controls { 
+      display:flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .muted { 
+      color: #665544;
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .chip { 
+      display:inline-block;
+      padding: 0.2rem 0.7rem;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 1rem;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+    #playsFilter { 
+      max-height: 8rem;
+      overflow:auto;
+      border: 1px solid var(--border);
+      padding: 0.7rem;
+      border-radius: 4px;
+      background: white;
+    }
+    details {
+      background: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+    summary {
+      cursor: pointer;
+      padding: 0.5rem;
+      user-select: none;
+    }
+    summary:hover {
+      color: var(--burgundy);
+    }
+    #details { 
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+    .hit { 
+      background: rgba(212, 175, 55, 0.3);
+      padding: 0 0.2rem;
+      border-radius: 2px;
+    }
+    .sr { 
+      font-size: 0.95rem;
+      color: #554433;
+    }
+    .warning { 
+      color: var(--burgundy);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    input[type="checkbox"] {
+      width: 1.1rem;
+      height: 1.1rem;
+      cursor: pointer;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .tab-btn {
+      padding: 0.7rem 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+    .tab-btn:hover {
+      background: rgba(139, 21, 56, 0.05);
+      color: var(--burgundy);
+    }
+    .tab-btn.active {
+      color: var(--burgundy);
+      border-bottom-color: var(--burgundy);
+      background: transparent;
+    }
+    .tab-content {
+      margin-top: 0;
+    }
+    .tab-content .controls {
+      margin-top: 0;
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+    .pagination button {
+      padding: 0.4rem 0.8rem;
+      min-width: 2.5rem;
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #ddd;
+    }
+    .pagination select {
+      padding: 0.4rem 0.6rem;
+    }
+    .pagination .page-info {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .refresh-btn-pending {
+      background: var(--gold) !important;
+      border-color: var(--gold) !important;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
   </style>
 </head>
 <body>
-  <h1>Shakespeare Tabular Search</h1>
-  <p class="muted">Search single words, bigrams, or trigrams. Use regex patterns (e.g., <code>love.*thee</code>) or literal text.</p>
+  <h1><a href="../">Contabulate</a>: Shakespeare Tabular Search</h1>
+  <p class="muted">Search for single words, bigrams, or trigrams across plays, acts, scence, characters, genres. Use regular expression patterns (e.g., <code>love.*thee</code>) or literal text.</p>
 
-  <div class="controls">
-    <label>Query <input id="q" type="text" placeholder="e.g., blood | mortal coil | love.*thee"></label>
-    <label>Granularity
-      <select id="gran">
-        <option value="play">Play</option>
-        <option value="genre">Genre</option>
-        <option value="act">Act</option>
-        <option value="scene" selected>Scene</option>
-        <option value="character">Character</option>
-      </select>
-    </label>
-    <label title="Force search in specific n-gram index (auto-detects by default)">
-      N-gram:
-      <select id="ngramMode">
-        <option value="auto" selected>Auto</option>
-        <option value="1">Unigrams</option>
-        <option value="2">Bigrams</option>
-        <option value="3">Trigrams</option>
-      </select>
-    </label>
-    <label><input type="checkbox" id="useRegex"> Regex mode</label>
-    <button id="go">Search</button>
-    <span id="status" class="chip">loading…</span>
-    <span id="denom" class="muted"></span>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="segments">Rows are Corpus Segments</button>
+    <button class="tab-btn" data-tab="ngrams">Rows are Ngrams</button>
   </div>
 
-  <details open>
-    <summary class="sr"><strong>Filter plays</strong> (default: all)</summary>
-    <div id="playsFilter"></div>
-  </details>
+  <div class="tab-content" id="segmentsTab">
+    <div class="controls">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
+        <span style="font-weight: 600;">Show</span>
+        <select id="ngramMode" style="font-size: 1rem;">
+          <option value="1" selected>single word</option>
+          <option value="2">bigram</option>
+          <option value="3">trigram</option>
+        </select>
+        <span style="font-weight: 600;">hits by</span>
+        <select id="gran" style="font-size: 1rem;">
+          <option value="play">Play</option>
+          <option value="genre">Genre</option>
+          <option value="act">Act</option>
+          <option value="scene" selected>Scene</option>
+          <option value="character">Character</option>
+        </select>
+        <span style="font-weight: 600;">matching the</span>
+        <select id="matchMode" style="font-size: 1rem;">
+          <option value="exact">exact term</option>
+          <option value="regex">regex pattern</option>
+        </select>
+        <input id="q" type="text" placeholder="e.g., death, love.*thee, to be" value="death" style="flex: 1; min-width: 20rem; font-size: 1rem;">
+        <button id="go" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Refresh</button>
+      </div>
+    </div>
 
-  <table id="results">
-    <thead><tr id="headRow"></tr></thead>
-    <tbody></tbody>
-  </table>
+    <details>
+      <summary class="sr"><strong>Filters & Display</strong></summary>
+      <div style="margin-bottom: 0.75rem;">
+        <label style="font-weight: 500;">Minimum hits: <input type="number" id="minHits" value="0" min="0" style="width: 5rem; padding: 0.4rem;"></label>
+      </div>
+      <div id="playsFilter"></div>
+    </details>
 
-  <div id="details"></div>
+    <table id="results">
+      <thead><tr id="headRow"></tr></thead>
+      <tbody></tbody>
+    </table>
+    
+    <div class="pagination" id="segmentsPagination" style="display: none;">
+      <button id="segmentsFirstPage">First</button>
+      <button id="segmentsPrevPage">Prev</button>
+      <span class="page-info" id="segmentsPageInfo">Page 1 of 1</span>
+      <button id="segmentsNextPage">Next</button>
+      <button id="segmentsLastPage">Last</button>
+      <label>
+        Rows per page:
+        <select id="segmentsPageSize">
+          <option value="25">25</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+          <option value="250">250</option>
+        </select>
+      </label>
+      <span class="page-info" id="segmentsTotalInfo"></span>
+    </div>
+  </div>
+
+  <div class="tab-content" id="ngramsTab" style="display: none;">
+    <div class="controls">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
+        <span style="font-weight: 600;">Show</span>
+        <select id="ngramsDisplayMode" style="font-size: 1rem;">
+          <option value="hits">hits</option>
+          <option value="pct">hit %</option>
+          <option value="both" selected>hits and hit %</option>
+        </select>
+        <span style="font-weight: 600;">for</span>
+        <select id="ngramsNgramMode" style="font-size: 1rem;">
+          <option value="1" selected>single words</option>
+          <option value="2">bigrams</option>
+          <option value="3">trigrams</option>
+        </select>
+        <span style="font-weight: 600;">matching the</span>
+        <select id="ngramsMatchMode" style="font-size: 1rem;">
+          <option value="exact">exact term</option>
+          <option value="regex">regex pattern</option>
+        </select>
+        <input type="text" id="ngramsQuery" placeholder="(optional: leave blank to show all)" style="flex: 1; min-width: 200px; font-size: 1rem; padding: 0.5rem;">
+        <button id="ngramsRefresh" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Refresh</button>
+      </div>
+    </div>
+
+    <details open>
+      <summary class="sr"><strong>Select Segments to Compare</strong></summary>
+      <div style="margin-bottom: 0.75rem;">
+        <p class="muted" style="margin: 0.5rem 0;">Search for and select plays, acts, scenes, genres, or characters to compare their n-gram frequencies.</p>
+        <div style="display: flex; gap: 1rem; margin-top: 0.75rem;">
+          <!-- Left column: Search and add segments -->
+          <div style="flex: 1; min-width: 300px;">
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center;">
+              <input type="text" id="segmentSearchInput" placeholder="Search segments..." style="flex: 1; padding: 0.5rem;">
+              <select id="segmentTypeFilter" style="padding: 0.5rem;">
+                <option value="all">All types</option>
+                <option value="play">Plays</option>
+                <option value="genre">Genres</option>
+                <option value="act">Acts</option>
+                <option value="scene">Scenes</option>
+                <option value="character">Characters</option>
+              </select>
+            </div>
+            <div id="availableSegmentsList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); padding: 0.5rem; border-radius: 4px; background: white;">
+              <p class="muted" style="text-align: center; padding: 2rem;">Type to search for segments...</p>
+            </div>
+          </div>
+          
+          <!-- Right column: Selected segments -->
+          <div style="flex: 1; min-width: 300px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <strong>Selected Segments (<span id="selectedSegmentsCount">0</span>)</strong>
+              <button id="clearAllSegments" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">Clear All</button>
+            </div>
+            <div id="selectedSegmentsList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); padding: 0.5rem; border-radius: 4px; background: white;">
+              <p class="muted" style="text-align: center; padding: 2rem;">No segments selected</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div id="ngramTableContainer"></div>
+    
+    <div class="pagination" id="ngramsPagination" style="display: none;">
+      <button id="ngramsFirstPage">First</button>
+      <button id="ngramsPrevPage">Prev</button>
+      <span class="page-info" id="ngramsPageInfo">Page 1 of 1</span>
+      <button id="ngramsNextPage">Next</button>
+      <button id="ngramsLastPage">Last</button>
+      <label>
+        Rows per page:
+        <select id="ngramsPageSize">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100" selected>100</option>
+          <option value="250">250</option>
+          <option value="500">500</option>
+        </select>
+      </label>
+      <span class="page-info" id="ngramsTotalInfo"></span>
+    </div>
+  </div>
 
 <script>
 (async function() {
-  const status = document.getElementById('status');
   const q = document.getElementById('q');
   const gran = document.getElementById('gran');
   const go = document.getElementById('go');
-  const useRegex = document.getElementById('useRegex');
+  const matchMode = document.getElementById('matchMode');
   const ngramMode = document.getElementById('ngramMode');
   const playsFilter = document.getElementById('playsFilter');
+  const minHits = document.getElementById('minHits');
   const theadRow = document.getElementById('headRow');
   const tbody = document.querySelector('#results tbody');
-  const details = document.getElementById('details');
-  const denomText = document.getElementById('denom');
+  const ngramTableContainer = document.getElementById('ngramTableContainer');
+
+  // Pending changes tracking
+  let segmentsPendingChanges = false;
+  let ngramsPendingChanges = false;
+  
+  // Last search state for segments
+  let lastSegmentsState = {
+    query: '',
+    ngramMode: '',
+    gran: '',
+    matchMode: ''
+  };
+  
+  // Last search state for ngrams
+  let lastNgramsState = {
+    query: '',
+    ngramMode: '',
+    matchMode: '',
+    displayMode: '',
+    segments: new Set()
+  };
+
+  // Tab switching
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const segmentsTab = document.getElementById('segmentsTab');
+  const ngramsTab = document.getElementById('ngramsTab');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      if (targetTab === 'segments') {
+        segmentsTab.style.display = 'block';
+        ngramsTab.style.display = 'none';
+      } else {
+        segmentsTab.style.display = 'none';
+        ngramsTab.style.display = 'block';
+      }
+    });
+  });
 
   async function loadJSON(path) {
     const res = await fetch(path);
@@ -99,10 +507,8 @@
       loadJSON('data/tokens_char2.json'),
       loadJSON('data/tokens_char3.json'),
     ]);
-    status.textContent = 'ready';
   } catch(e) {
-    status.textContent = 'failed to load data';
-    console.error(e);
+    console.error('Failed to load data:', e);
     return;
   }
 
@@ -110,6 +516,9 @@
   const playsById = new Map(plays.map(p => [p.play_id, p]));
   const charactersById = new Map(characters.map(c => [c.character_id, c]));
 
+  // Ngrams tab state
+  let ngramsSelectedSegments = new Set();
+  
   function renderPlayFilter() {
     playsFilter.innerHTML = '';
     for (const p of plays) {
@@ -120,12 +529,244 @@
     }
   }
   renderPlayFilter();
+  
+  // Build all available segments list
+  let allAvailableSegments = [];
+  
+  function buildAvailableSegments() {
+    allAvailableSegments = [];
+    
+    // Add plays
+    plays.forEach(p => {
+      allAvailableSegments.push({
+        type: 'play',
+        id: p.play_id,
+        label: p.title,
+        meta: `${p.genre || 'Unknown'}, ${p.first_performance_year || 'Unknown year'}`,
+        searchText: `${p.title} ${p.genre || ''} play`.toLowerCase()
+      });
+    });
+    
+    // Add genres
+    const genres = [...new Set(plays.map(p => p.genre).filter(Boolean))];
+    genres.forEach(g => {
+      allAvailableSegments.push({
+        type: 'genre',
+        id: g,
+        label: g,
+        meta: `Genre`,
+        searchText: `${g} genre`.toLowerCase()
+      });
+    });
+    
+    // Add acts
+    const acts = new Map();
+    chunks.forEach(chunk => {
+      const key = `${chunk.play_id}:${chunk.act}`;
+      if (!acts.has(key)) {
+        const play = playsById.get(chunk.play_id);
+        acts.set(key, {
+          type: 'act',
+          id: key,
+          label: `${play.title} - Act ${chunk.act}`,
+          meta: `Act`,
+          searchText: `${play.title} act ${chunk.act}`.toLowerCase()
+        });
+      }
+    });
+    allAvailableSegments.push(...acts.values());
+    
+    // Add scenes
+    chunks.forEach(chunk => {
+      const play = playsById.get(chunk.play_id);
+      allAvailableSegments.push({
+        type: 'scene',
+        id: chunk.scene_id,
+        label: `${play.title} - Act ${chunk.act}, Scene ${chunk.scene}`,
+        meta: `${chunk.total_words || 0} words`,
+        searchText: `${play.title} act ${chunk.act} scene ${chunk.scene}`.toLowerCase()
+      });
+    });
+    
+    // Add all characters (sorted by word count)
+    const sortedChars = [...characters].sort((a, b) => (b.total_words_spoken || 0) - (a.total_words_spoken || 0));
+    sortedChars.forEach(c => {
+      allAvailableSegments.push({
+        type: 'character',
+        id: c.character_id,
+        label: c.name,
+        meta: `${c.play_title}, ${c.total_words_spoken || 0} words`,
+        searchText: `${c.name} ${c.play_title} character`.toLowerCase()
+      });
+    });
+  }
+  
+  buildAvailableSegments();
+  
+  // Render available segments based on search
+  function renderAvailableSegments() {
+    const searchInput = document.getElementById('segmentSearchInput');
+    const typeFilter = document.getElementById('segmentTypeFilter');
+    const container = document.getElementById('availableSegmentsList');
+    
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const typeValue = typeFilter.value;
+    
+    // Filter segments
+    let filtered = allAvailableSegments.filter(seg => {
+      // Type filter
+      if (typeValue !== 'all' && seg.type !== typeValue) return false;
+      
+      // Search filter
+      if (searchTerm && !seg.searchText.includes(searchTerm)) return false;
+      
+      // Don't show already selected segments
+      const isSelected = Array.from(ngramsSelectedSegments).some(selected => 
+        selected.type === seg.type && String(selected.id) === String(seg.id)
+      );
+      if (isSelected) return false;
+      
+      return true;
+    });
+    
+    // Limit to 100 results for performance
+    if (filtered.length > 100) {
+      filtered = filtered.slice(0, 100);
+    }
+    
+    if (filtered.length === 0) {
+      container.innerHTML = '<p class="muted" style="text-align: center; padding: 2rem;">No segments found</p>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    filtered.forEach(seg => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 0.4rem; margin-bottom: 0.25rem; border-bottom: 1px solid var(--border);';
+      
+      const typeLabel = seg.type.charAt(0).toUpperCase() + seg.type.slice(1);
+      div.innerHTML = `
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 500;">${seg.label}</div>
+          <div class="muted" style="font-size: 0.85rem;">${seg.meta}</div>
+        </div>
+        <button class="add-segment-btn" data-type="${seg.type}" data-id="${seg.id}" data-label="${seg.label}" style="padding: 0.25rem 0.6rem; font-size: 0.85rem; white-space: nowrap;">Add</button>
+      `;
+      container.appendChild(div);
+    });
+    
+    // Add click handlers
+    container.querySelectorAll('.add-segment-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const segType = btn.dataset.type;
+        let segId = btn.dataset.id;
+        
+        // Parse numeric IDs for appropriate types
+        if (segType === 'play' || segType === 'character' || segType === 'scene') {
+          segId = parseInt(segId);
+        }
+        
+        ngramsSelectedSegments.add({
+          type: segType,
+          id: segId,
+          label: btn.dataset.label
+        });
+        
+        renderAvailableSegments();
+        renderSelectedSegments();
+        checkNgramsPendingChanges();
+      });
+    });
+  }
+  
+  // Render selected segments
+  function renderSelectedSegments() {
+    const container = document.getElementById('selectedSegmentsList');
+    const countSpan = document.getElementById('selectedSegmentsCount');
+    
+    countSpan.textContent = ngramsSelectedSegments.size;
+    
+    if (ngramsSelectedSegments.size === 0) {
+      container.innerHTML = '<p class="muted" style="text-align: center; padding: 2rem;">No segments selected</p>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    const sortedSegments = Array.from(ngramsSelectedSegments).sort((a, b) => a.label.localeCompare(b.label));
+    
+    sortedSegments.forEach(seg => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 0.4rem; margin-bottom: 0.25rem; border-bottom: 1px solid var(--border);';
+      
+      const typeLabel = seg.type.charAt(0).toUpperCase() + seg.type.slice(1);
+      div.innerHTML = `
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 500;">${seg.label}</div>
+          <div class="muted" style="font-size: 0.85rem;">${typeLabel}</div>
+        </div>
+        <button class="remove-segment-btn" style="padding: 0.25rem 0.6rem; font-size: 0.85rem; background: #dc3545; border-color: #dc3545;">Remove</button>
+      `;
+      container.appendChild(div);
+      
+      // Add remove handler
+      div.querySelector('.remove-segment-btn').addEventListener('click', () => {
+        ngramsSelectedSegments.delete(seg);
+        renderAvailableSegments();
+        renderSelectedSegments();
+        checkNgramsPendingChanges();
+      });
+    });
+  }
+  
+  // Initialize segment selectors
+  function initSegmentSelectors() {
+    const searchInput = document.getElementById('segmentSearchInput');
+    const typeFilter = document.getElementById('segmentTypeFilter');
+    const clearAllBtn = document.getElementById('clearAllSegments');
+    
+    searchInput.addEventListener('input', renderAvailableSegments);
+    typeFilter.addEventListener('change', renderAvailableSegments);
+    
+    clearAllBtn.addEventListener('click', () => {
+      ngramsSelectedSegments.clear();
+      renderAvailableSegments();
+      renderSelectedSegments();
+      checkNgramsPendingChanges();
+    });
+    
+    // Initial render
+    renderSelectedSegments();
+  }
+  
+  initSegmentSelectors();
+  
   function selectedPlayIds() {
     const ids = [];
     playsFilter.querySelectorAll('input[type="checkbox"]').forEach(cb => { if (cb.checked) ids.push(Number(cb.dataset.play)); });
     return new Set(ids);
   }
   function fmtPct(num) { return (num*100).toFixed(2) + '%'; }
+
+
+  // Pagination state
+  let segmentsCurrentPage = 1;
+  let segmentsPageSize = 50;
+  let segmentsAllRows = [];
+  
+  let ngramsCurrentPage = 1;
+  let ngramsPageSize = 100;
+  let ngramsAllRows = [];
+
+  // Pagination helper
+  function paginateArray(arr, page, pageSize) {
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    return arr.slice(start, end);
+  }
+
+  function getTotalPages(totalRows, pageSize) {
+    return Math.max(1, Math.ceil(totalRows / pageSize));
+  }
 
   const actTotals = new Map();
   const playTotals = new Map();
@@ -136,6 +777,8 @@
   }
 
   let sortKey = null, sortDir = 'desc';
+  let ngramsSortKey = 'totalCount', ngramsSortDir = 'desc';
+  
   function setHeaders(cols){
     theadRow.innerHTML='';
     cols.forEach(c => {
@@ -146,7 +789,9 @@
       th.addEventListener('click', () => {
         if (sortKey === c.key) sortDir = (sortDir === 'asc' ? 'desc' : 'asc');
         else { sortKey = c.key; sortDir = c.defaultDir || 'desc'; }
-        renderRows(buildRows(q.value.trim()));
+        segmentsAllRows = sortRows(segmentsAllRows);
+        segmentsCurrentPage = 1;
+        renderSegmentsPage();
       });
       theadRow.appendChild(th);
     });
@@ -193,15 +838,11 @@
   }
 
   function buildRows(query){
-    const isRegex = useRegex.checked;
+    const isRegex = (matchMode.value === 'regex');
     const ngramModeVal = ngramMode.value;
-    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    let n = Math.min(terms.length, 3);
     
-    // Override n if user explicitly selected n-gram mode
-    if (ngramModeVal !== 'auto') {
-      n = parseInt(ngramModeVal);
-    }
+    // Always use the explicitly selected n-gram mode
+    const n = parseInt(ngramModeVal);
 
     const playsSel = selectedPlayIds();
     const granVal = gran.value;
@@ -228,13 +869,12 @@
         if (matchingKeys.length === 0) {
           theadRow.innerHTML = '';
           tbody.innerHTML = '<tr><td class="muted">No tokens matched regex pattern.</td></tr>';
-          denomText.textContent = '';
           return null;
         }
         
         // Show warning if too many matches (performance)
         if (matchingKeys.length > 1000) {
-          denomText.textContent = '⚠️ Pattern matched ' + matchingKeys.length + ' tokens (showing aggregated results)';
+          console.log('⚠️ Pattern matched ' + matchingKeys.length + ' tokens (showing aggregated results)');
         }
 
         // Aggregate all matching tokens
@@ -246,6 +886,9 @@
       }
     } else {
       // Literal mode: exact match
+      // For single words, just use the query as-is (lowercased)
+      // For bigrams/trigrams, split by whitespace and take first n terms
+      const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
       const key = terms.slice(0, n).join(' ');
       allPostings = idx[key] || [];
     }
@@ -256,39 +899,45 @@
       for (const [scene_id, count] of allPostings){
         const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
         const d = denomFor(n,'scene',m);
-        rows.push({ play_title: m.play_title, genre:m.genre, play_id:m.play_id, act:m.act, scene:m.scene, count, pct: d? count/d : 0, scene_id });
+        const totalWords = m.total_words || 0;
+        const ngramCount = Math.max(0, totalWords - (n - 1));
+        rows.push({ play_title: m.play_title, genre:m.genre, play_id:m.play_id, act:m.act, scene:m.scene, total_words:totalWords, ngram_count:ngramCount, count, pct: d? count/d : 0, scene_id });
       }
       setHeaders([
         {key:'play_title', label:'Play', defaultDir:'asc'},
         {key:'act', label:'Act'},
         {key:'scene', label:'Scene'},
-        {key:'count', label:'Count'},
+        {key:'ngram_count', label: n===1 ? 'Word count' : n===2 ? 'Bigram count' : 'Trigram count'},
+        {key:'count', label:'Hits'},
         {key:'pct', label:`% of ${n===1?'scene words':n===2?'scene bigrams':'scene trigrams'}`},
       ]);
-      denomText.textContent = n===1?'Denominator: total words in scene':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in scene';
       return rows;
     }
 
     if (granVal==='act'){
       const tmp = new Map();
+      const actWordCounts = new Map();
       for (const [scene_id,c] of allPostings){
         const m = chunkById.get(scene_id); if (!m || !playsSel.has(m.play_id)) continue;
         const k = `${m.play_id}:${m.act}`;
         tmp.set(k, (tmp.get(k)||0) + c);
+        actWordCounts.set(k, (actWordCounts.get(k)||0) + (m.total_words||0));
       }
       for (const [k,count] of tmp.entries()){
         const [pid, actNum] = k.split(':').map(Number);
         const play = playsById.get(pid);
         const denom = denomFor(n,'act',{play_id:pid,act:actNum});
-        rows.push({ play_title: play.title, genre:play.genre, play_id:pid, act:actNum, count, pct: denom? count/denom : 0 });
+        const total_words = actWordCounts.get(k) || 0;
+        const ngramCount = Math.max(0, total_words - (n - 1));
+        rows.push({ play_title: play.title, genre:play.genre, play_id:pid, act:actNum, total_words, ngram_count:ngramCount, count, pct: denom? count/denom : 0 });
       }
       setHeaders([
         {key:'play_title', label:'Play', defaultDir:'asc'},
         {key:'act', label:'Act'},
-        {key:'count', label:'Count'},
+        {key:'ngram_count', label: n===1 ? 'Word count' : n===2 ? 'Bigram count' : 'Trigram count'},
+        {key:'count', label:'Hits'},
         {key:'pct', label:`% of ${n===1?'act words':n===2?'act bigrams':'act trigrams'}`},
       ]);
-      denomText.textContent = n===1?'Denominator: total words in act':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in act';
       return rows;
     }
 
@@ -303,18 +952,18 @@
         const denom = denomFor(n,'play',{play_id:pid});
         const num_lines = p.total_lines ?? 0;
         const total_words = p.total_words ?? 0;
-        rows.push({ title:p.title, genre:p.genre, first_year:p.first_performance_year||'', num_lines, total_words, count, pct: denom? count/denom : 0 });
+        const ngramCount = Math.max(0, total_words - (n - 1));
+        rows.push({ play_id:pid, title:p.title, genre:p.genre, first_year:p.first_performance_year||'', num_lines, total_words, ngram_count:ngramCount, count, pct: denom? count/denom : 0 });
       }
       setHeaders([
         {key:'title', label:'Play', defaultDir:'asc'},
         {key:'genre', label:'Genre', defaultDir:'asc'},
         {key:'first_year', label:'Year'},
         {key:'num_lines', label:'# lines'},
-        {key:'total_words', label:'Word count'},
-        {key:'count', label:'Count'},
+        {key:'ngram_count', label: n===1 ? 'Word count' : n===2 ? 'Bigram count' : 'Trigram count'},
+        {key:'count', label:'Hits'},
         {key:'pct', label:`% of ${n===1?'play words':n===2?'play bigrams':'play trigrams'}`},
       ]);
-      denomText.textContent = n===1?'Denominator: total words in play':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in play';
       return rows;
     }
 
@@ -331,15 +980,15 @@
       for (const [genre,count] of tmp.entries()){
         const totalWords = genreTotals.get(genre) || 0;
         const denom = Math.max(0, totalWords - (n-1));
-        rows.push({ genre, total_words: totalWords, count, pct: denom? count/denom : 0 });
+        const ngramCount = Math.max(0, totalWords - (n - 1));
+        rows.push({ genre, total_words: totalWords, ngram_count:ngramCount, count, pct: denom? count/denom : 0 });
       }
       setHeaders([
         {key:'genre', label:'Genre', defaultDir:'asc'},
-        {key:'total_words', label:'Word count'},
-        {key:'count', label:'Count'},
+        {key:'ngram_count', label: n===1 ? 'Word count' : n===2 ? 'Bigram count' : 'Trigram count'},
+        {key:'count', label:'Hits'},
         {key:'pct', label:`% of ${n===1?'genre words':n===2?'genre bigrams':'genre trigrams'}`},
       ]);
-      denomText.textContent = n===1?'Denominator: total words in genre':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' in genre';
       return rows;
     }
 
@@ -348,57 +997,722 @@
         const c = charactersById.get(char_id);
         if (!c || !playsSel.has(c.play_id)) continue;
         const denom = denomFor(n,'character',c);
-        rows.push({ play_title:c.play_title, name:c.name, total_words_spoken:c.total_words_spoken||0, count, pct: denom? count/denom : 0 });
+        const totalWords = c.total_words_spoken || 0;
+        const ngramCount = Math.max(0, totalWords - (n - 1));
+        rows.push({ play_title:c.play_title, name:c.name, total_words_spoken:totalWords, ngram_count:ngramCount, count, pct: denom? count/denom : 0 });
       }
       setHeaders([
         {key:'play_title', label:'Play', defaultDir:'asc'},
         {key:'name', label:'Character', defaultDir:'asc'},
-        {key:'count', label:'Count'},
+        {key:'ngram_count', label: n===1 ? 'Word count' : n===2 ? 'Bigram count' : 'Trigram count'},
+        {key:'count', label:'Hits'},
         {key:'pct', label:`% of character ${n===1?'words':n===2?'bigrams':'trigrams'}`},
-        {key:'total_words_spoken', label:'Char. total words'},
       ]);
-      denomText.textContent = n===1?'Denominator: total words spoken by character':'Denominator: total contiguous '+(n===2?'bigrams':'trigrams')+' spoken by character';
       return rows;
     }
   }
 
   function renderRows(rows){
     tbody.innerHTML='';
-    if (!rows || rows.length===0){ tbody.innerHTML = '<tr><td colspan="8" class="muted">No results.</td></tr>'; return; }
+    if (!rows || rows.length===0){ 
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">No results.</td></tr>'; 
+      document.getElementById('segmentsPagination').style.display = 'none';
+      return; 
+    }
+    
+    // Filter by minimum hits
+    const minHitsVal = parseInt(minHits.value) || 0;
+    if (minHitsVal > 0) {
+      rows = rows.filter(r => (r.count || 0) >= minHitsVal);
+    }
+    if (rows.length === 0) { 
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">No results match the minimum hits filter.</td></tr>'; 
+      document.getElementById('segmentsPagination').style.display = 'none';
+      return; 
+    }
+    
     rows = sortRows(rows);
     updateSortIndicators();
+    
+    // Store all rows and reset to page 1
+    segmentsAllRows = rows;
+    segmentsCurrentPage = 1;
+    
+    renderSegmentsPage();
+  }
+  
+  function renderSegmentsPage() {
+    const totalPages = getTotalPages(segmentsAllRows.length, segmentsPageSize);
+    const paginatedRows = paginateArray(segmentsAllRows, segmentsCurrentPage, segmentsPageSize);
+    
+    tbody.innerHTML = '';
     const cols = Array.from(theadRow.children).map(th => th.dataset.key);
-    for (const r of rows) {
+    const firstColKey = cols[0];
+    
+    for (const r of paginatedRows) {
       const tr = document.createElement('tr');
-      tr.innerHTML = cols.map(k => `<td>${(k==='pct') ? fmtPct(r[k]||0) : (r[k] ?? '')}</td>`).join('');
+      cols.forEach((k, idx) => {
+        const td = document.createElement('td');
+        if (k === 'pct') {
+          td.textContent = fmtPct(r[k]||0);
+        } else {
+          td.textContent = r[k] ?? '';
+        }
+        // Make first column clickable for drill-down
+        if (idx === 0 && r[k]) {
+          td.style.cursor = 'pointer';
+          td.style.color = 'var(--burgundy)';
+          td.style.textDecoration = 'underline';
+          td.style.fontWeight = '500';
+          td.addEventListener('click', () => showDrillDown(r, firstColKey));
+        }
+        tr.appendChild(td);
+      });
       tbody.appendChild(tr);
     }
+    
+    // Update pagination controls
+    const paginationDiv = document.getElementById('segmentsPagination');
+    paginationDiv.style.display = segmentsAllRows.length > 25 ? 'flex' : 'none';
+    
+    document.getElementById('segmentsPageInfo').textContent = `Page ${segmentsCurrentPage} of ${totalPages}`;
+    document.getElementById('segmentsTotalInfo').textContent = `(${segmentsAllRows.length} total rows)`;
+    
+    document.getElementById('segmentsFirstPage').disabled = segmentsCurrentPage === 1;
+    document.getElementById('segmentsPrevPage').disabled = segmentsCurrentPage === 1;
+    document.getElementById('segmentsNextPage').disabled = segmentsCurrentPage === totalPages;
+    document.getElementById('segmentsLastPage').disabled = segmentsCurrentPage === totalPages;
+  }
+
+  function showDrillDown(rowData, firstColKey) {
+    const granVal = gran.value;
+    const ngramModeVal = ngramMode.value;
+    const n = parseInt(ngramModeVal);
+    
+    // Clear current selections and add the appropriate segment
+    ngramsSelectedSegments.clear();
+    
+    let segmentToAdd = null;
+    
+    if (granVal === 'play') {
+      const playId = rowData.play_id;
+      const play = playsById.get(playId);
+      if (play) {
+        segmentToAdd = {
+          type: 'play',
+          id: playId,
+          label: play.title
+        };
+      }
+    } else if (granVal === 'genre') {
+      const genre = rowData.genre;
+      segmentToAdd = {
+        type: 'genre',
+        id: genre,
+        label: genre
+      };
+    } else if (granVal === 'character') {
+      const charName = rowData.name;
+      const playTitle = rowData.play_title;
+      // Find character_id
+      let charId = null;
+      for (const [id, c] of charactersById) {
+        if (c.name === charName && c.play_title === playTitle) {
+          charId = id;
+          segmentToAdd = {
+            type: 'character',
+            id: charId,
+            label: `${charName} (${playTitle})`
+          };
+          break;
+        }
+      }
+    } else if (granVal === 'act') {
+      const playId = rowData.play_id;
+      const actNum = rowData.act;
+      const play = playsById.get(playId);
+      if (play) {
+        segmentToAdd = {
+          type: 'act',
+          id: `${playId}:${actNum}`,
+          label: `${play.title} - Act ${actNum}`
+        };
+      }
+    } else if (granVal === 'scene') {
+      const sceneId = rowData.scene_id;
+      const chunk = chunkById.get(sceneId);
+      if (chunk) {
+        const play = playsById.get(chunk.play_id);
+        segmentToAdd = {
+          type: 'scene',
+          id: sceneId,
+          label: `${play.title} - Act ${chunk.act}, Scene ${chunk.scene}`
+        };
+      }
+    }
+    
+    // Set the ngram mode to match the current search
+    document.getElementById('ngramsNgramMode').value = n.toString();
+    
+    // Switch to ngrams tab first
+    tabBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="ngrams"]').classList.add('active');
+    segmentsTab.style.display = 'none';
+    ngramsTab.style.display = 'block';
+    
+    // Add the segment and build the comparison table
+    if (segmentToAdd) {
+      ngramsSelectedSegments.add(segmentToAdd);
+      renderAvailableSegments();
+      renderSelectedSegments();
+      buildNgramsComparison();
+    }
+    
+    ngramsTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  
+  function renderNgramsPage() {
+    const totalPages = getTotalPages(ngramsAllRows.length, ngramsPageSize);
+    const paginatedRows = paginateArray(ngramsAllRows, ngramsCurrentPage, ngramsPageSize);
+    
+    const tbody = document.getElementById('ngramsTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    for (const [token, count] of paginatedRows) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${token}</td><td>${count}</td>`;
+      tbody.appendChild(tr);
+    }
+    
+    // Update pagination controls
+    const paginationDiv = document.getElementById('ngramsPagination');
+    paginationDiv.style.display = ngramsAllRows.length > 25 ? 'flex' : 'none';
+    
+    document.getElementById('ngramsPageInfo').textContent = `Page ${ngramsCurrentPage} of ${totalPages}`;
+    document.getElementById('ngramsTotalInfo').textContent = `(${ngramsAllRows.length} total rows)`;
+    
+    document.getElementById('ngramsFirstPage').disabled = ngramsCurrentPage === 1;
+    document.getElementById('ngramsPrevPage').disabled = ngramsCurrentPage === 1;
+    document.getElementById('ngramsNextPage').disabled = ngramsCurrentPage === totalPages;
+    document.getElementById('ngramsLastPage').disabled = ngramsCurrentPage === totalPages;
+  }
+
+  // Check if segments settings have changed
+  function checkSegmentsPendingChanges() {
+    const currentState = {
+      query: q.value.trim(),
+      ngramMode: ngramMode.value,
+      gran: gran.value,
+      matchMode: matchMode.value
+    };
+    
+    const hasChanges = 
+      currentState.query !== lastSegmentsState.query ||
+      currentState.ngramMode !== lastSegmentsState.ngramMode ||
+      currentState.gran !== lastSegmentsState.gran ||
+      currentState.matchMode !== lastSegmentsState.matchMode;
+    
+    segmentsPendingChanges = hasChanges;
+    updateSegmentsRefreshButton();
+  }
+  
+  function updateSegmentsRefreshButton() {
+    if (segmentsPendingChanges) {
+      go.classList.add('refresh-btn-pending');
+      go.textContent = 'Refresh ⟳';
+    } else {
+      go.classList.remove('refresh-btn-pending');
+      go.textContent = 'Refresh';
+    }
+  }
+  
+  function saveSegmentsState() {
+    lastSegmentsState = {
+      query: q.value.trim(),
+      ngramMode: ngramMode.value,
+      gran: gran.value,
+      matchMode: matchMode.value
+    };
+    segmentsPendingChanges = false;
+    updateSegmentsRefreshButton();
+  }
+  
+  // Check if ngrams settings have changed
+  function checkNgramsPendingChanges() {
+    const currentQuery = document.getElementById('ngramsQuery').value.trim();
+    const currentNgramMode = document.getElementById('ngramsNgramMode').value;
+    const currentMatchMode = document.getElementById('ngramsMatchMode').value;
+    const currentDisplayMode = document.getElementById('ngramsDisplayMode').value;
+    
+    // Create a comparable representation of selected segments
+    const currentSegmentsStr = Array.from(ngramsSelectedSegments)
+      .map(s => `${s.type}:${s.id}`)
+      .sort()
+      .join(',');
+    const lastSegmentsStr = Array.from(lastNgramsState.segments)
+      .map(s => `${s.type}:${s.id}`)
+      .sort()
+      .join(',');
+    
+    const hasChanges = 
+      currentQuery !== lastNgramsState.query ||
+      currentNgramMode !== lastNgramsState.ngramMode ||
+      currentMatchMode !== lastNgramsState.matchMode ||
+      currentDisplayMode !== lastNgramsState.displayMode ||
+      currentSegmentsStr !== lastSegmentsStr;
+    
+    ngramsPendingChanges = hasChanges;
+    updateNgramsRefreshButton();
+  }
+  
+  function updateNgramsRefreshButton() {
+    const refreshBtn = document.getElementById('ngramsRefresh');
+    if (ngramsPendingChanges) {
+      refreshBtn.classList.add('refresh-btn-pending');
+      refreshBtn.textContent = 'Refresh ⟳';
+    } else {
+      refreshBtn.classList.remove('refresh-btn-pending');
+      refreshBtn.textContent = 'Refresh';
+    }
+  }
+  
+  function saveNgramsState() {
+    lastNgramsState = {
+      query: document.getElementById('ngramsQuery').value.trim(),
+      ngramMode: document.getElementById('ngramsNgramMode').value,
+      matchMode: document.getElementById('ngramsMatchMode').value,
+      displayMode: document.getElementById('ngramsDisplayMode').value,
+      segments: new Set(Array.from(ngramsSelectedSegments).map(s => ({type: s.type, id: s.id})))
+    };
+    ngramsPendingChanges = false;
+    updateNgramsRefreshButton();
   }
 
   function doSearch(){
     const query = q.value.trim();
-    if (!query){ tbody.innerHTML = ''; details.innerHTML=''; denomText.textContent=''; return; }
+    if (!query){ tbody.innerHTML = ''; ngramTableContainer.innerHTML=''; return; }
     sortKey = 'count';
     sortDir = 'desc';
     const rows = buildRows(query);
-    if (rows) renderRows(rows);
+    if (rows) {
+      renderRows(rows);
+      saveSegmentsState();
+    }
   }
 
   go.addEventListener('click', doSearch);
   q.addEventListener('keydown', e => { if (e.key==='Enter') doSearch(); });
-
-  // Auto-detect regex patterns
-  q.addEventListener('input', () => {
-    const val = q.value;
-    const hasRegexChars = /[.*+?^${}()|[\]\\]/.test(val);
-    if (hasRegexChars && !useRegex.checked) {
-      useRegex.checked = true;
+  minHits.addEventListener('input', () => {
+    const query = q.value.trim();
+    if (query) renderRows(buildRows(query));
+  });
+  
+  // Segments pagination controls
+  document.getElementById('segmentsFirstPage').addEventListener('click', () => {
+    segmentsCurrentPage = 1;
+    renderSegmentsPage();
+  });
+  document.getElementById('segmentsPrevPage').addEventListener('click', () => {
+    if (segmentsCurrentPage > 1) {
+      segmentsCurrentPage--;
+      renderSegmentsPage();
+    }
+  });
+  document.getElementById('segmentsNextPage').addEventListener('click', () => {
+    const totalPages = getTotalPages(segmentsAllRows.length, segmentsPageSize);
+    if (segmentsCurrentPage < totalPages) {
+      segmentsCurrentPage++;
+      renderSegmentsPage();
+    }
+  });
+  document.getElementById('segmentsLastPage').addEventListener('click', () => {
+    segmentsCurrentPage = getTotalPages(segmentsAllRows.length, segmentsPageSize);
+    renderSegmentsPage();
+  });
+  document.getElementById('segmentsPageSize').addEventListener('change', (e) => {
+    segmentsPageSize = parseInt(e.target.value);
+    segmentsCurrentPage = 1;
+    renderSegmentsPage();
+  });
+  
+  // Ngrams pagination controls
+  document.getElementById('ngramsFirstPage').addEventListener('click', () => {
+    ngramsCurrentPage = 1;
+    if (ngramsAllRows.length > 0 && ngramsAllRows[0].hasOwnProperty('seg0_count')) {
+      renderNgramsComparisonPage();
+    } else {
+      renderNgramsPage();
+    }
+  });
+  document.getElementById('ngramsPrevPage').addEventListener('click', () => {
+    if (ngramsCurrentPage > 1) {
+      ngramsCurrentPage--;
+      if (ngramsAllRows.length > 0 && ngramsAllRows[0].hasOwnProperty('seg0_count')) {
+        renderNgramsComparisonPage();
+      } else {
+        renderNgramsPage();
+      }
+    }
+  });
+  document.getElementById('ngramsNextPage').addEventListener('click', () => {
+    const totalPages = getTotalPages(ngramsAllRows.length, ngramsPageSize);
+    if (ngramsCurrentPage < totalPages) {
+      ngramsCurrentPage++;
+      if (ngramsAllRows.length > 0 && ngramsAllRows[0].hasOwnProperty('seg0_count')) {
+        renderNgramsComparisonPage();
+      } else {
+        renderNgramsPage();
+      }
+    }
+  });
+  document.getElementById('ngramsLastPage').addEventListener('click', () => {
+    ngramsCurrentPage = getTotalPages(ngramsAllRows.length, ngramsPageSize);
+    if (ngramsAllRows.length > 0 && ngramsAllRows[0].hasOwnProperty('seg0_count')) {
+      renderNgramsComparisonPage();
+    } else {
+      renderNgramsPage();
+    }
+  });
+  document.getElementById('ngramsPageSize').addEventListener('change', (e) => {
+    ngramsPageSize = parseInt(e.target.value);
+    ngramsCurrentPage = 1;
+    if (ngramsAllRows.length > 0 && ngramsAllRows[0].hasOwnProperty('seg0_count')) {
+      renderNgramsComparisonPage();
+    } else {
+      renderNgramsPage();
     }
   });
 
+  // Build ngrams comparison table
+  function buildNgramsComparison() {
+    if (ngramsSelectedSegments.size === 0) {
+      ngramTableContainer.innerHTML = '<p class="muted">Select at least one segment to compare.</p>';
+      document.getElementById('ngramsPagination').style.display = 'none';
+      return;
+    }
+    
+    const n = parseInt(document.getElementById('ngramsNgramMode').value);
+    const displayMode = document.getElementById('ngramsDisplayMode').value;
+    const queryTerm = document.getElementById('ngramsQuery').value.trim();
+    const ngramsMatchMode = document.getElementById('ngramsMatchMode').value;
+    
+    // Get appropriate indices (separate scene-level and character-level)
+    let sceneIdx = {};
+    let charIdx = {};
+    if (n === 1) {
+      sceneIdx = tokens;
+      charIdx = tokensChar;
+    } else if (n === 2) {
+      sceneIdx = tokens2;
+      charIdx = tokensChar2;
+    } else {
+      sceneIdx = tokens3;
+      charIdx = tokensChar3;
+    }
+    
+    // Build frequency maps for each selected segment
+    const segmentMaps = [];
+    const segmentLabels = [];
+    const segmentTotalWords = [];
+    
+    for (const seg of ngramsSelectedSegments) {
+      const freqMap = new Map();
+      let totalWords = 0;
+      
+      if (seg.type === 'play') {
+        const playId = seg.id;
+        const play = playsById.get(playId);
+        totalWords = play ? play.total_words : 0;
+        
+        // Use scene-level index only
+        for (const [token, postings] of Object.entries(sceneIdx)) {
+          let total = 0;
+          if (Array.isArray(postings)) {
+            for (const posting of postings) {
+              const [scene_id, count] = posting;
+              const chunk = chunkById.get(scene_id);
+              if (chunk && chunk.play_id === playId) total += count;
+            }
+          }
+          if (total > 0) freqMap.set(token, total);
+        }
+      } else if (seg.type === 'genre') {
+        const genre = seg.id;
+        for (const play of plays) {
+          if (play.genre === genre) totalWords += play.total_words || 0;
+        }
+        
+        // Use scene-level index only
+        for (const [token, postings] of Object.entries(sceneIdx)) {
+          let total = 0;
+          if (Array.isArray(postings)) {
+            for (const posting of postings) {
+              const [scene_id, count] = posting;
+              const chunk = chunkById.get(scene_id);
+              if (chunk && chunk.genre === genre) total += count;
+            }
+          }
+          if (total > 0) freqMap.set(token, total);
+        }
+      } else if (seg.type === 'act') {
+        // Parse act ID (format: "playId:actNum")
+        const [playIdStr, actNumStr] = seg.id.split(':');
+        const playId = parseInt(playIdStr);
+        const actNum = parseInt(actNumStr);
+        
+        // Calculate total words for this act
+        for (const chunk of chunks) {
+          if (chunk.play_id === playId && chunk.act === actNum) {
+            totalWords += chunk.total_words || 0;
+          }
+        }
+        
+        // Use scene-level index
+        for (const [token, postings] of Object.entries(sceneIdx)) {
+          let total = 0;
+          if (Array.isArray(postings)) {
+            for (const posting of postings) {
+              const [scene_id, count] = posting;
+              const chunk = chunkById.get(scene_id);
+              if (chunk && chunk.play_id === playId && chunk.act === actNum) {
+                total += count;
+              }
+            }
+          }
+          if (total > 0) freqMap.set(token, total);
+        }
+      } else if (seg.type === 'scene') {
+        const sceneId = seg.id;
+        const chunk = chunkById.get(sceneId);
+        totalWords = chunk ? chunk.total_words : 0;
+        
+        // Use scene-level index
+        for (const [token, postings] of Object.entries(sceneIdx)) {
+          if (Array.isArray(postings)) {
+            for (const posting of postings) {
+              const [scene_id, count] = posting;
+              if (scene_id === sceneId) {
+                freqMap.set(token, count);
+              }
+            }
+          }
+        }
+      } else if (seg.type === 'character') {
+        const charId = seg.id;
+        const char = charactersById.get(charId);
+        totalWords = char ? char.total_words_spoken : 0;
+        
+        // Use character-level index only
+        for (const [token, postings] of Object.entries(charIdx)) {
+          if (Array.isArray(postings)) {
+            for (const posting of postings) {
+              const [char_id, count] = posting;
+              if (char_id === charId) freqMap.set(token, count);
+            }
+          }
+        }
+      }
+      
+      segmentMaps.push(freqMap);
+      segmentLabels.push(seg.label);
+      segmentTotalWords.push(totalWords);
+    }
+    
+    // Collect all unique tokens
+    const allTokens = new Set();
+    for (const freqMap of segmentMaps) {
+      for (const token of freqMap.keys()) {
+        allTokens.add(token);
+      }
+    }
+    
+    // Filter by query if provided
+    let tokensToShow = Array.from(allTokens);
+    if (queryTerm) {
+      if (ngramsMatchMode === 'regex') {
+        try {
+          const pattern = new RegExp(queryTerm, 'i');
+          tokensToShow = tokensToShow.filter(token => pattern.test(token));
+        } catch (e) {
+          ngramTableContainer.innerHTML = `<p class="warning">Invalid regex: ${e.message}</p>`;
+          return;
+        }
+      } else {
+        // Exact term matching (case-insensitive exact match)
+        const lowerQuery = queryTerm.toLowerCase();
+        tokensToShow = tokensToShow.filter(token => token.toLowerCase() === lowerQuery);
+      }
+    }
+    
+    // Build rows with filtered tokens
+    const rows = [];
+    for (const token of tokensToShow) {
+      const row = { token };
+      for (let i = 0; i < segmentMaps.length; i++) {
+        const count = segmentMaps[i].get(token) || 0;
+        const totalWords = segmentTotalWords[i];
+        const pct = totalWords > 0 ? ((count / totalWords) * 100).toFixed(4) : '0.0000';
+        row[`seg${i}_count`] = count;
+        row[`seg${i}_pct`] = parseFloat(pct);
+      }
+      // Calculate total count across all segments for sorting
+      row.totalCount = segmentMaps.reduce((sum, map) => sum + (map.get(token) || 0), 0);
+      rows.push(row);
+    }
+    
+    // Store for pagination and sorting
+    ngramsAllRows = rows;
+    ngramsCurrentPage = 1;
+    ngramsSortKey = 'totalCount';
+    ngramsSortDir = 'desc';
+    
+    // Apply default sort
+    sortNgramsRows();
+    
+    // Build HTML table
+    const ngramLabel = n === 1 ? 'Unigram' : n === 2 ? 'Bigram' : 'Trigram';
+    let html = `<h3>${ngramLabel} Comparison Across ${segmentLabels.length} Segment${segmentLabels.length > 1 ? 's' : ''}</h3>`;
+    const matchInfo = queryTerm ? ` matching ${ngramsMatchMode === 'regex' ? 'pattern' : 'term'} "${queryTerm}"` : '';
+    html += `<p class="muted">Showing ${rows.length} unique ${ngramLabel.toLowerCase()}s${matchInfo}</p>`;
+    html += '<table id="ngramsTable"><thead><tr><th class="sortable-header" data-key="token" style="width: 30%;">' + ngramLabel + '</th>';
+    
+    // Add column headers for each segment
+    for (let i = 0; i < segmentLabels.length; i++) {
+      if (displayMode === 'hits') {
+        html += `<th class="sortable-header" data-key="seg${i}_count">${segmentLabels[i]}<br><span class="muted" style="font-weight: normal;">Hits</span></th>`;
+      } else if (displayMode === 'pct') {
+        html += `<th class="sortable-header" data-key="seg${i}_pct">${segmentLabels[i]}<br><span class="muted" style="font-weight: normal;">%</span></th>`;
+      } else { // both
+        html += `<th class="sortable-header" data-key="seg${i}_count">${segmentLabels[i]}<br><span class="muted" style="font-weight: normal;">Hits</span></th>`;
+        html += `<th class="sortable-header" data-key="seg${i}_pct">${segmentLabels[i]}<br><span class="muted" style="font-weight: normal;">%</span></th>`;
+      }
+    }
+    
+    html += '</tr></thead><tbody id="ngramsTableBody"></tbody></table>';
+    ngramTableContainer.innerHTML = html;
+    
+    // Add click handlers to headers
+    document.querySelectorAll('#ngramsTable .sortable-header').forEach(th => {
+      th.style.cursor = 'pointer';
+      th.title = 'Click to sort';
+      th.addEventListener('click', () => {
+        const key = th.dataset.key;
+        if (ngramsSortKey === key) {
+          ngramsSortDir = (ngramsSortDir === 'asc' ? 'desc' : 'asc');
+        } else {
+          ngramsSortKey = key;
+          ngramsSortDir = (key === 'token' ? 'asc' : 'desc');
+        }
+        sortNgramsRows();
+        ngramsCurrentPage = 1;
+        renderNgramsComparisonPage();
+      });
+    });
+    
+    updateNgramsSortIndicators();
+    renderNgramsComparisonPage();
+    saveNgramsState();
+  }
+  
+  function sortNgramsRows() {
+    if (!ngramsSortKey || !ngramsAllRows.length) return;
+    
+    ngramsAllRows.sort((a, b) => {
+      const av = a[ngramsSortKey];
+      const bv = b[ngramsSortKey];
+      
+      if (typeof av === 'string' || typeof bv === 'string') {
+        return ngramsSortDir === 'asc' 
+          ? String(av).localeCompare(String(bv)) 
+          : String(bv).localeCompare(String(av));
+      }
+      
+      return ngramsSortDir === 'asc' ? (av - bv) : (bv - av);
+    });
+  }
+  
+  function updateNgramsSortIndicators() {
+    document.querySelectorAll('#ngramsTable .sortable-header').forEach(th => {
+      th.classList.remove('sorted-asc', 'sorted-desc');
+      if (th.dataset.key === ngramsSortKey) {
+        th.classList.add(ngramsSortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+      }
+    });
+  }
+  
+  function renderNgramsComparisonPage() {
+    const tbody = document.getElementById('ngramsTableBody');
+    if (!tbody || !Array.isArray(ngramsAllRows) || ngramsAllRows.length === 0) return;
+    
+    const displayMode = document.getElementById('ngramsDisplayMode').value;
+    const totalPages = getTotalPages(ngramsAllRows.length, ngramsPageSize);
+    const paginatedRows = paginateArray(ngramsAllRows, ngramsCurrentPage, ngramsPageSize);
+    
+    tbody.innerHTML = '';
+    for (const row of paginatedRows) {
+      const tr = document.createElement('tr');
+      let html = `<td>${row.token}</td>`;
+      
+      // Add cells for each segment
+      const numSegments = Math.floor((Object.keys(row).length - 2) / 2); // -2 for token and totalCount
+      for (let i = 0; i < numSegments; i++) {
+        if (displayMode === 'hits') {
+          html += `<td>${row[`seg${i}_count`]}</td>`;
+        } else if (displayMode === 'pct') {
+          html += `<td>${row[`seg${i}_pct`].toFixed(4)}%</td>`;
+        } else { // both
+          html += `<td>${row[`seg${i}_count`]}</td>`;
+          html += `<td>${row[`seg${i}_pct`].toFixed(4)}%</td>`;
+        }
+      }
+      
+      tr.innerHTML = html;
+      tbody.appendChild(tr);
+    }
+    
+    // Update sort indicators
+    updateNgramsSortIndicators();
+    
+    // Update pagination controls
+    const paginationDiv = document.getElementById('ngramsPagination');
+    paginationDiv.style.display = ngramsAllRows.length > 25 ? 'flex' : 'none';
+    
+    document.getElementById('ngramsPageInfo').textContent = `Page ${ngramsCurrentPage} of ${totalPages}`;
+    document.getElementById('ngramsTotalInfo').textContent = `(${ngramsAllRows.length} total rows)`;
+    
+    document.getElementById('ngramsFirstPage').disabled = ngramsCurrentPage === 1;
+    document.getElementById('ngramsPrevPage').disabled = ngramsCurrentPage === 1;
+    document.getElementById('ngramsNextPage').disabled = ngramsCurrentPage === totalPages;
+    document.getElementById('ngramsLastPage').disabled = ngramsCurrentPage === totalPages;
+  }
+  
+  // Ngrams tab controls
+  document.getElementById('ngramsRefresh').addEventListener('click', buildNgramsComparison);
+  document.getElementById('ngramsQuery').addEventListener('keydown', e => { 
+    if (e.key === 'Enter' && ngramsSelectedSegments.size > 0) buildNgramsComparison(); 
+  });
+  document.getElementById('ngramsQuery').addEventListener('input', checkNgramsPendingChanges);
+  document.getElementById('ngramsNgramMode').addEventListener('change', checkNgramsPendingChanges);
+  document.getElementById('ngramsDisplayMode').addEventListener('change', checkNgramsPendingChanges);
+  document.getElementById('ngramsMatchMode').addEventListener('change', checkNgramsPendingChanges);
+
+  // Segments tab controls - track changes
+  q.addEventListener('input', () => {
+    const val = q.value;
+    const hasRegexChars = /[.*+?^${}()|[\]\\]/.test(val);
+    if (hasRegexChars && matchMode.value === 'exact') {
+      matchMode.value = 'regex';
+    }
+    checkSegmentsPendingChanges();
+  });
+  ngramMode.addEventListener('change', checkSegmentsPendingChanges);
+  gran.addEventListener('change', checkSegmentsPendingChanges);
+  matchMode.addEventListener('change', checkSegmentsPendingChanges);
+
   // initial state
   gran.value = 'play';
-  q.value = 'mortal coil';
+  q.value = 'death';
   doSearch();
 })();
 </script>
