@@ -15,6 +15,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | Homer (Iliad & Odyssey) | Ancient Greek | [homer.contabulate.org](https://homer.contabulate.org) |
 | Divine Comedy (Dante) | Italian | [dante.contabulate.org](https://dante.contabulate.org) |
 | Aeneid (Virgil) | Latin | [aeneid.contabulate.org](https://aeneid.contabulate.org) |
+| Moby-Dick (Herman Melville) | English | [moby-dick.contabulate.org](https://moby-dick.contabulate.org) |
 
 ## Development
 
