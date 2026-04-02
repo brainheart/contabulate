@@ -116,6 +116,16 @@ main {
   font-size: 0.95rem;
   color: var(--ink);
   white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.works-table thead th[data-key] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.works-table thead th[data-key]:hover {
+  color: var(--burgundy);
 }
 
 .works-table thead th.num {

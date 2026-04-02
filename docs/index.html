@@ -23,111 +23,102 @@
   </p>
 
   <div class="works-table-wrapper">
-    <table class="works-table">
+    <table class="works-table" id="worksTable">
       <thead>
         <tr>
-          <th>Work</th>
-          <th>Language</th>
-          <th>Texts</th>
-          <th class="num">Characters</th>
-          <th class="num">Unique Words</th>
-          <th class="num">Total Words</th>
+          <th data-key="work" data-type="text">Work</th>
+          <th data-key="language" data-type="text">Language</th>
+          <th data-key="texts" data-type="text">Texts</th>
+          <th data-key="unique" data-type="number" class="num">Unique Words</th>
+          <th data-key="total" data-type="number" class="num">Total Words</th>
           <th>Explore</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>
+          <td data-sort="Shakespeare">
             <a href="https://shakespeare.contabulate.org/" class="work-title">Shakespeare</a>
             <span class="work-author">Complete Works</span>
           </td>
-          <td><span class="language-tag">English</span></td>
-          <td>37 plays</td>
-          <td class="num">1,406</td>
-          <td class="num">23,572</td>
-          <td class="num">828,823</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="37">37 plays</td>
+          <td class="num" data-sort="23572">23,572</td>
+          <td class="num" data-sort="828823">828,823</td>
           <td><a href="https://shakespeare.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="King James Bible">
             <a href="https://kjv.contabulate.org/" class="work-title">King James Bible</a>
           </td>
-          <td><span class="language-tag">English</span></td>
-          <td>66 books</td>
-          <td class="muted">—</td>
-          <td class="num">12,483</td>
-          <td class="num">792,095</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="66">66 books</td>
+          <td class="num" data-sort="12483">12,483</td>
+          <td class="num" data-sort="792095">792,095</td>
           <td><a href="https://kjv.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Luther Bible">
             <a href="https://luther.contabulate.org/" class="work-title">Luther Bible</a>
           </td>
-          <td><span class="language-tag">German</span></td>
-          <td>66 books</td>
-          <td class="muted">—</td>
-          <td class="num">20,563</td>
-          <td class="num">697,989</td>
+          <td data-sort="German"><span class="language-tag">German</span></td>
+          <td data-sort="66">66 books</td>
+          <td class="num" data-sort="20563">20,563</td>
+          <td class="num" data-sort="697989">697,989</td>
           <td><a href="https://luther.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Tanakh">
             <a href="https://tanakh.contabulate.org/" class="work-title">Tanakh</a>
             <span class="work-author">Hebrew Bible</span>
           </td>
-          <td><span class="language-tag">Hebrew</span></td>
-          <td>39 books</td>
-          <td class="muted">—</td>
-          <td class="num">39,617</td>
-          <td class="num">308,669</td>
+          <td data-sort="Hebrew"><span class="language-tag">Hebrew</span></td>
+          <td data-sort="39">39 books</td>
+          <td class="num" data-sort="39617">39,617</td>
+          <td class="num" data-sort="308669">308,669</td>
           <td><a href="https://tanakh.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Homer">
             <a href="https://homer.contabulate.org/" class="work-title">Homer</a>
             <span class="work-author">Iliad &amp; Odyssey</span>
           </td>
-          <td><span class="language-tag">Ancient Greek</span></td>
-          <td>2 epics</td>
-          <td class="num">48</td>
-          <td class="num">30,679</td>
-          <td class="num">199,084</td>
+          <td data-sort="Ancient Greek"><span class="language-tag">Ancient Greek</span></td>
+          <td data-sort="2">2 epics</td>
+          <td class="num" data-sort="30679">30,679</td>
+          <td class="num" data-sort="199084">199,084</td>
           <td><a href="https://homer.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Divine Comedy">
             <a href="https://dante.contabulate.org/" class="work-title">Divine Comedy</a>
             <span class="work-author">Dante Alighieri</span>
           </td>
-          <td><span class="language-tag">Italian</span></td>
-          <td>100 cantos</td>
-          <td class="muted">—</td>
-          <td class="num">12,831</td>
-          <td class="num">101,603</td>
+          <td data-sort="Italian"><span class="language-tag">Italian</span></td>
+          <td data-sort="100">100 cantos</td>
+          <td class="num" data-sort="12831">12,831</td>
+          <td class="num" data-sort="101603">101,603</td>
           <td><a href="https://dante.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Aeneid">
             <a href="https://aeneid.contabulate.org/" class="work-title">Aeneid</a>
             <span class="work-author">Virgil</span>
           </td>
-          <td><span class="language-tag">Latin</span></td>
-          <td>12 books</td>
-          <td class="muted">—</td>
-          <td class="num">16,626</td>
-          <td class="num">63,741</td>
+          <td data-sort="Latin"><span class="language-tag">Latin</span></td>
+          <td data-sort="12">12 books</td>
+          <td class="num" data-sort="16626">16,626</td>
+          <td class="num" data-sort="63741">63,741</td>
           <td><a href="https://aeneid.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
         <tr>
-          <td>
+          <td data-sort="Moby-Dick">
             <a href="https://moby-dick.contabulate.org/" class="work-title">Moby-Dick</a>
             <span class="work-author">Herman Melville</span>
           </td>
-          <td><span class="language-tag">English</span></td>
-          <td>135 chapters</td>
-          <td class="muted">—</td>
-          <td class="num">18,195</td>
-          <td class="num">215,318</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="135">135 chapters</td>
+          <td class="num" data-sort="18195">18,195</td>
+          <td class="num" data-sort="215318">215,318</td>
           <td><a href="https://moby-dick.contabulate.org/" class="explore-link">Explore →</a></td>
         </tr>
       </tbody>
@@ -136,7 +127,6 @@
           <td>8 works</td>
           <td>6 languages</td>
           <td>457 texts</td>
-          <td class="num">1,454</td>
           <td class="num">174,566</td>
           <td class="num">3,207,322</td>
           <td></td>
@@ -151,6 +141,71 @@
   <span class="footer-sep">·</span>
   <a href="https://github.com/brainheart">Open source on GitHub</a>
 </footer>
+
+<script>
+(function () {
+  'use strict';
+  const table = document.getElementById('worksTable');
+  if (!table) return;
+  const thead = table.querySelector('thead');
+  const tbody = table.querySelector('tbody');
+  const ths = Array.from(thead.querySelectorAll('th[data-key]'));
+
+  let currentKey = null;
+  let currentDir = 'asc';
+
+  function sortValue(td, type) {
+    const raw = td.getAttribute('data-sort');
+    if (raw == null) return type === 'number' ? 0 : '';
+    return type === 'number' ? parseFloat(raw) || 0 : raw.toLowerCase();
+  }
+
+  function doSort(key, type) {
+    if (currentKey === key) {
+      currentDir = currentDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentKey = key;
+      currentDir = type === 'number' ? 'desc' : 'asc';
+    }
+
+    const colIdx = ths.findIndex(th => th.getAttribute('data-key') === key);
+    if (colIdx < 0) return;
+
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const va = sortValue(a.children[colIdx], type);
+      const vb = sortValue(b.children[colIdx], type);
+      let cmp = 0;
+      if (typeof va === 'number' && typeof vb === 'number') {
+        cmp = va - vb;
+      } else {
+        cmp = String(va).localeCompare(String(vb));
+      }
+      return currentDir === 'asc' ? cmp : -cmp;
+    });
+
+    rows.forEach(r => tbody.appendChild(r));
+    updateIndicators();
+  }
+
+  function updateIndicators() {
+    ths.forEach(th => {
+      const key = th.getAttribute('data-key');
+      const arrow = key === currentKey ? (currentDir === 'asc' ? ' ▲' : ' ▼') : '';
+      const base = th.textContent.replace(/ [▲▼]$/, '');
+      th.textContent = base + arrow;
+    });
+  }
+
+  ths.forEach(th => {
+    th.style.cursor = 'pointer';
+    th.style.userSelect = 'none';
+    th.addEventListener('click', () => {
+      doSort(th.getAttribute('data-key'), th.getAttribute('data-type') || 'text');
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
