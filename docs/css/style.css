@@ -97,6 +97,26 @@ main {
   line-height: 1.7;
 }
 
+.description p {
+  margin: 0 0 1rem;
+}
+
+.example-queries {
+  margin: 0 auto;
+  padding-left: 1.4rem;
+  max-width: 620px;
+  text-align: left;
+}
+
+.example-queries li + li {
+  margin-top: 0.7rem;
+}
+
+.example-queries a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+}
+
 /* Table */
 .works-table-wrapper {
   overflow-x: auto;
