@@ -6,7 +6,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 
 ## Instances
 
-| Work | Language | URL |
+| Corpus | Language | URL |
 |------|----------|-----|
 | Shakespeare (Complete Works) | English | [shakespeare.contabulate.org](https://shakespeare.contabulate.org) |
 | King James Bible | English | [kjv.contabulate.org](https://kjv.contabulate.org) |
