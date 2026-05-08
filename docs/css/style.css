@@ -224,6 +224,12 @@ main {
   text-decoration: none;
 }
 
+.sample-query-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
 /* Totals row */
 .totals-row td {
   background: linear-gradient(to bottom, #faf8f3 0%, #f0ede5 100%);
