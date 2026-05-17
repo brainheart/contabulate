@@ -46,6 +46,7 @@
       <thead>
         <tr>
           <th data-key="work" data-type="text">Corpus</th>
+          <th data-key="release" data-type="number">Release Date</th>
           <th data-key="language" data-type="text">Language</th>
           <th data-key="texts" data-type="text">Texts</th>
           <th data-key="unique" data-type="number" class="num">Unique Words</th>
@@ -56,52 +57,67 @@
       </thead>
       <tbody>
         <tr>
-          <td data-sort="Shakespeare">
-            <a href="https://shakespeare.contabulate.org/" class="work-title">🎭 Shakespeare</a>
-            <span class="work-author">Plays</span>
+          <td data-sort="Thucydides">
+            <a href="https://thucydides.contabulate.org/" class="work-title">📜 Thucydides</a>
+            <span class="work-author">History of the Peloponnesian War</span>
           </td>
+          <td class="release-date" data-sort="20260515">2026-05-15</td>
+          <td data-sort="Ancient Greek"><span class="language-tag">Ancient Greek</span></td>
+          <td data-sort="8">8 books</td>
+          <td class="num" data-sort="22548">22,548</td>
+          <td class="num" data-sort="150392">150,392</td>
+          <td class="num" data-sort="0">0</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td data-sort="Hawthorne">
+            <a href="https://hawthorne.contabulate.org/" class="work-title">🌹 Hawthorne</a>
+            <span class="work-author">Nathaniel Hawthorne</span>
+          </td>
+          <td class="release-date" data-sort="20260410">2026-04-10</td>
           <td data-sort="English"><span class="language-tag">English</span></td>
-          <td data-sort="37">37 plays</td>
-          <td class="num" data-sort="23572">23,572</td>
-          <td class="num" data-sort="828823">828,823</td>
+          <td data-sort="12">12 works</td>
+          <td class="num" data-sort="27401">27,401</td>
+          <td class="num" data-sort="924507">924,507</td>
+          <td class="num" data-sort="0">0</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td data-sort="Melville">
+            <a href="https://melville.contabulate.org/" class="work-title">🐋 Melville</a>
+            <span class="work-author">Herman Melville</span>
+          </td>
+          <td class="release-date" data-sort="20260403">2026-04-03</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="11">11 works</td>
+          <td class="num" data-sort="43463">43,463</td>
+          <td class="num" data-sort="1232881">1,232,881</td>
+          <td class="num" data-sort="0">0</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td data-sort="Homer">
+            <a href="https://homer.contabulate.org/" class="work-title">🏛 Homer</a>
+            <span class="work-author">Iliad &amp; Odyssey</span>
+          </td>
+          <td class="release-date" data-sort="20260331">2026-03-31</td>
+          <td data-sort="Ancient Greek"><span class="language-tag">Ancient Greek</span></td>
+          <td data-sort="48">48 books</td>
+          <td class="num" data-sort="30679">30,679</td>
+          <td class="num" data-sort="199084">199,084</td>
           <td class="num" data-sort="0">0</td>
           <td>
             <ul class="sample-query-list">
-              <li><a href="https://shakespeare.contabulate.org/?cs=1&zr=0&hl=1&q=dead%7Cdeath&nm=1&gran=character&mm=regex&ts=%255B%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522dead%257Cdeath%2522%255D&sk=t0_count&sd=desc&co=name%2Cgender%2Cplay_title%2Cnum_speeches%2Cngram_count%2Ct0_count%2Ct1_pct&s_ft_gender=F" class="starter-query-link">Who is Shakespeare's most death-obsessed female character?</a></li>
+              <li><a href="https://homer.contabulate.org/?cs=1&zr=0&hl=1&q=%CE%BE%28%CE%AD%7C%CE%B5%5B%E1%BF%96%CE%AF%5D%29%CE%BD&nm=1&gran=play&mm=regex&ts=%255B%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%255D&qt=%255B%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%255D&sk=t2_pct&sd=desc&co=location%2Ctitle%2Cgenre%2Cnum_chapters%2Cnum_lines%2Cngram_count%2Ct0_pct%2Ct1_count%2Ct2_pct%2Ct3_count" class="starter-query-link">Poem of Force, Poem of Hospitality</a></li>
             </ul>
           </td>
-        </tr>
-        <tr>
-          <td data-sort="King James Bible">
-            <a href="https://kjv.contabulate.org/" class="work-title">📖 King James Bible</a>
-          </td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td data-sort="66">66 books</td>
-          <td class="num" data-sort="12483">12,483</td>
-          <td class="num" data-sort="792095">792,095</td>
-          <td class="num" data-sort="315">315</td>
-          <td>
-            <ul class="sample-query-list">
-              <li>The quantity of mercy... <a href="https://kjv.contabulate.org/?cs=1&zr=0&hl=1&q=law&nm=1&gran=genre&mm=&ts=%255B%257B%2522t%2522%253A%2522law%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522mercy%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522mercy%2522%255D&sk=t0_pct&sd=desc&co=genre%2Cnum_plays%2Cngram_count%2Ct0_pct%2Ct1_pct" class="starter-query-link">“law” vs. “mercy” by testament</a></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td data-sort="Luther Bible">
-            <a href="https://luther.contabulate.org/" class="work-title">✝️ Luther Bible</a>
-          </td>
-          <td data-sort="German"><span class="language-tag">German</span></td>
-          <td data-sort="66">66 books</td>
-          <td class="num" data-sort="20563">20,563</td>
-          <td class="num" data-sort="697989">697,989</td>
-          <td class="num" data-sort="315">315</td>
-          <td></td>
         </tr>
         <tr>
           <td data-sort="Tanakh">
             <a href="https://tanakh.contabulate.org/" class="work-title">🕎 Tanakh</a>
             <span class="work-author">Hebrew Bible</span>
           </td>
+          <td class="release-date" data-sort="20260331">2026-03-31</td>
           <td data-sort="Hebrew"><span class="language-tag">Hebrew</span></td>
           <td data-sort="39">39 books</td>
           <td class="num" data-sort="39617">39,617</td>
@@ -116,50 +132,11 @@
           </td>
         </tr>
         <tr>
-          <td data-sort="Homer">
-            <a href="https://homer.contabulate.org/" class="work-title">🏛 Homer</a>
-            <span class="work-author">Iliad &amp; Odyssey</span>
-          </td>
-          <td data-sort="Ancient Greek"><span class="language-tag">Ancient Greek</span></td>
-          <td data-sort="48">48 books</td>
-          <td class="num" data-sort="30679">30,679</td>
-          <td class="num" data-sort="199084">199,084</td>
-          <td class="num" data-sort="0">0</td>
-          <td>
-            <ul class="sample-query-list">
-              <li><a href="https://homer.contabulate.org/?cs=1&zr=0&hl=1&q=%CE%BE%28%CE%AD%7C%CE%B5%5B%E1%BF%96%CE%AF%5D%29%CE%BD&nm=1&gran=play&mm=regex&ts=%255B%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%255D&qt=%255B%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%255D&sk=t2_pct&sd=desc&co=location%2Ctitle%2Cgenre%2Cnum_chapters%2Cnum_lines%2Cngram_count%2Ct0_pct%2Ct1_count%2Ct2_pct%2Ct3_count" class="starter-query-link">Poem of Force, Poem of Hospitality</a></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td data-sort="Thucydides">
-            <a href="https://thucydides.contabulate.org/" class="work-title">📜 Thucydides</a>
-            <span class="work-author">History of the Peloponnesian War</span>
-          </td>
-          <td data-sort="Ancient Greek"><span class="language-tag">Ancient Greek</span></td>
-          <td data-sort="8">8 books</td>
-          <td class="num" data-sort="22548">22,548</td>
-          <td class="num" data-sort="150392">150,392</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Divine Comedy">
-            <a href="https://dante.contabulate.org/" class="work-title">🔥 Divine Comedy</a>
-            <span class="work-author">Dante Alighieri</span>
-          </td>
-          <td data-sort="Italian"><span class="language-tag">Italian</span></td>
-          <td data-sort="100">100 cantos</td>
-          <td class="num" data-sort="12831">12,831</td>
-          <td class="num" data-sort="101603">101,603</td>
-          <td class="num" data-sort="77">77</td>
-          <td></td>
-        </tr>
-        <tr>
           <td data-sort="Aeneid">
             <a href="https://aeneid.contabulate.org/" class="work-title">⚔️ Aeneid</a>
             <span class="work-author">Virgil</span>
           </td>
+          <td class="release-date" data-sort="20260327">2026-03-27</td>
           <td data-sort="Latin"><span class="language-tag">Latin</span></td>
           <td data-sort="12">12 books</td>
           <td class="num" data-sort="16626">16,626</td>
@@ -168,33 +145,68 @@
           <td></td>
         </tr>
         <tr>
-          <td data-sort="Melville">
-            <a href="https://melville.contabulate.org/" class="work-title">🐋 Melville</a>
-            <span class="work-author">Herman Melville</span>
+          <td data-sort="Divine Comedy">
+            <a href="https://dante.contabulate.org/" class="work-title">🔥 Divine Comedy</a>
+            <span class="work-author">Dante Alighieri</span>
           </td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td data-sort="11">11 works</td>
-          <td class="num" data-sort="43463">43,463</td>
-          <td class="num" data-sort="1232881">1,232,881</td>
-          <td class="num" data-sort="0">0</td>
+          <td class="release-date" data-sort="20260327">2026-03-27</td>
+          <td data-sort="Italian"><span class="language-tag">Italian</span></td>
+          <td data-sort="100">100 cantos</td>
+          <td class="num" data-sort="12831">12,831</td>
+          <td class="num" data-sort="101603">101,603</td>
+          <td class="num" data-sort="77">77</td>
           <td></td>
         </tr>
         <tr>
-          <td data-sort="Hawthorne">
-            <a href="https://hawthorne.contabulate.org/" class="work-title">🌹 Hawthorne</a>
-            <span class="work-author">Nathaniel Hawthorne</span>
+          <td data-sort="Luther Bible">
+            <a href="https://luther.contabulate.org/" class="work-title">✝️ Luther Bible</a>
           </td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td data-sort="12">12 works</td>
-          <td class="num" data-sort="27401">27,401</td>
-          <td class="num" data-sort="924507">924,507</td>
-          <td class="num" data-sort="0">0</td>
+          <td class="release-date" data-sort="20260327">2026-03-27</td>
+          <td data-sort="German"><span class="language-tag">German</span></td>
+          <td data-sort="66">66 books</td>
+          <td class="num" data-sort="20563">20,563</td>
+          <td class="num" data-sort="697989">697,989</td>
+          <td class="num" data-sort="315">315</td>
           <td></td>
+        </tr>
+        <tr>
+          <td data-sort="King James Bible">
+            <a href="https://kjv.contabulate.org/" class="work-title">📖 King James Bible</a>
+          </td>
+          <td class="release-date" data-sort="20260317">2026-03-17</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="66">66 books</td>
+          <td class="num" data-sort="12483">12,483</td>
+          <td class="num" data-sort="792095">792,095</td>
+          <td class="num" data-sort="315">315</td>
+          <td>
+            <ul class="sample-query-list">
+              <li>The quantity of mercy... <a href="https://kjv.contabulate.org/?cs=1&zr=0&hl=1&q=law&nm=1&gran=genre&mm=&ts=%255B%257B%2522t%2522%253A%2522law%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522mercy%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522mercy%2522%255D&sk=t0_pct&sd=desc&co=genre%2Cnum_plays%2Cngram_count%2Ct0_pct%2Ct1_pct" class="starter-query-link">“law” vs. “mercy” by testament</a></li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td data-sort="Shakespeare">
+            <a href="https://shakespeare.contabulate.org/" class="work-title">🎭 Shakespeare</a>
+            <span class="work-author">Plays</span>
+          </td>
+          <td class="release-date" data-sort="20250909">2025-09-09</td>
+          <td data-sort="English"><span class="language-tag">English</span></td>
+          <td data-sort="37">37 plays</td>
+          <td class="num" data-sort="23572">23,572</td>
+          <td class="num" data-sort="828823">828,823</td>
+          <td class="num" data-sort="0">0</td>
+          <td>
+            <ul class="sample-query-list">
+              <li><a href="https://shakespeare.contabulate.org/?cs=1&zr=0&hl=1&q=dead%7Cdeath&nm=1&gran=character&mm=regex&ts=%255B%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522dead%257Cdeath%2522%255D&sk=t0_count&sd=desc&co=name%2Cgender%2Cplay_title%2Cnum_speeches%2Cngram_count%2Ct0_count%2Ct1_pct&s_ft_gender=F" class="starter-query-link">Who is Shakespeare's most death-obsessed female character?</a></li>
+            </ul>
+          </td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="totals-row">
           <td>10 corpora</td>
+          <td>2025–2026</td>
           <td>6 languages</td>
           <td>477 texts</td>
           <td class="num">224,515</td>
@@ -212,7 +224,7 @@
   <span class="footer-sep">·</span>
   <a href="https://github.com/brainheart">Open source on GitHub</a>
   <span class="footer-sep">·</span>
-  <span>build 2026-05-15T16:00:00-0400</span>
+  <span>build 2026-05-17T11:03:09-0400</span>
 </footer>
 
 <script>
@@ -277,6 +289,8 @@
       doSort(th.getAttribute('data-key'), th.getAttribute('data-type') || 'text');
     });
   });
+
+  doSort('release', 'number');
 })();
 </script>
 

@@ -168,6 +168,11 @@ main {
   white-space: nowrap;
 }
 
+.works-table td.release-date {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .works-table td.muted {
   color: #999;
   text-align: center;
