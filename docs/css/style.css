@@ -168,7 +168,7 @@ main {
   white-space: nowrap;
 }
 
-.works-table td.release-date {
+.works-table td.date-cell {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }

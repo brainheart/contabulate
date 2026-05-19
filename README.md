@@ -12,7 +12,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | King James Bible | English | [kjv.contabulate.org](https://kjv.contabulate.org) |
 | Luther Bible | German | [luther.contabulate.org](https://luther.contabulate.org) |
 | Tanakh (Hebrew Bible) | Hebrew | [tanakh.contabulate.org](https://tanakh.contabulate.org) |
-| Homer (Iliad & Odyssey) | Ancient Greek | [homer.contabulate.org](https://homer.contabulate.org) |
+| Homer (Iliad & Odyssey) | Greek | [homer.contabulate.org](https://homer.contabulate.org) |
 | Divine Comedy (Dante) | Italian | [dante.contabulate.org](https://dante.contabulate.org) |
 | Aeneid (Virgil) | Latin | [aeneid.contabulate.org](https://aeneid.contabulate.org) |
 | Melville (Herman Melville) | English | [melville.contabulate.org](https://melville.contabulate.org) |
