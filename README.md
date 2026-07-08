@@ -20,6 +20,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | Divine Comedy (Dante) | Italian | [dante.contabulate.org](https://dante.contabulate.org) |
 | Xenophon | Ancient Greek | [xenophon.contabulate.org](https://xenophon.contabulate.org) |
 | Thucydides (History of the Peloponnesian War) | Ancient Greek | [thucydides.contabulate.org](https://thucydides.contabulate.org) |
+| Austen (Jane Austen) | English | [austen.contabulate.org](https://austen.contabulate.org) |
 
 Adding a new instance to the landing page is a one-line change: append its
 base URL to [`docs/instances.json`](docs/instances.json). The page fetches
