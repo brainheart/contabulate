@@ -178,6 +178,14 @@ main {
   text-align: center;
 }
 
+.works-table tbody tr.is-unavailable {
+  opacity: 0.55;
+}
+
+.works-table .work-title.muted {
+  color: #999;
+}
+
 .works-table tbody tr:nth-child(even) {
   background: rgba(249, 247, 241, 0.3);
 }

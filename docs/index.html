@@ -45,200 +45,22 @@
     <table class="works-table" id="worksTable">
       <thead>
         <tr>
-          <th data-key="work" data-type="text">Corpus</th>
-          <th data-key="release" data-type="number">Released</th>
+          <th data-key="title" data-type="text">Corpus</th>
           <th data-key="updated" data-type="number">Updated</th>
           <th data-key="language" data-type="text">Language</th>
-          <th data-key="unique" data-type="number" class="num">Unique Words</th>
-          <th data-key="total" data-type="number" class="num">Total Words</th>
-          <th data-key="commentaries" data-type="number" class="num">Commentaries</th>
+          <th data-key="texts" data-type="number" class="num">Texts</th>
+          <th data-key="segments" data-type="number" class="num">Segments</th>
+          <th data-key="distinct_words" data-type="number" class="num">Distinct Words</th>
+          <th data-key="words" data-type="number" class="num">Total Words</th>
           <th>Fun Sample Queries</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td data-sort="Kafka">
-            <a href="https://kafka.contabulate.org/" class="work-title">🪳 Kafka</a>
-            <span class="work-author">Franz Kafka</span>
-          </td>
-          <td class="date-cell" data-sort="20260521">2026-05-21</td>
-          <td class="date-cell" data-sort="20260527">2026-05-27</td>
-          <td data-sort="German"><span class="language-tag">German</span></td>
-          <td class="num" data-sort="22363">22,363</td>
-          <td class="num" data-sort="333510">333,510</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Xenophon">
-            <a href="https://xenophon.contabulate.org/" class="work-title">🏺 Xenophon</a>
-            <span class="work-author">14 Greek works</span>
-          </td>
-          <td class="date-cell" data-sort="20260517">2026-05-17</td>
-          <td class="date-cell" data-sort="20260517">2026-05-17</td>
-          <td data-sort="Greek"><span class="language-tag">Greek</span></td>
-          <td class="num" data-sort="39733">39,733</td>
-          <td class="num" data-sort="312209">312,209</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Thucydides">
-            <a href="https://thucydides.contabulate.org/" class="work-title">📜 Thucydides</a>
-            <span class="work-author">History of the Peloponnesian War</span>
-          </td>
-          <td class="date-cell" data-sort="20260515">2026-05-15</td>
-          <td class="date-cell" data-sort="20260517">2026-05-17</td>
-          <td data-sort="Greek"><span class="language-tag">Greek</span></td>
-          <td class="num" data-sort="22548">22,548</td>
-          <td class="num" data-sort="150392">150,392</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Hawthorne">
-            <a href="https://hawthorne.contabulate.org/" class="work-title">🌹 Hawthorne</a>
-            <span class="work-author">Nathaniel Hawthorne</span>
-          </td>
-          <td class="date-cell" data-sort="20260410">2026-04-10</td>
-          <td class="date-cell" data-sort="20260503">2026-05-03</td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td class="num" data-sort="27401">27,401</td>
-          <td class="num" data-sort="924507">924,507</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Melville">
-            <a href="https://melville.contabulate.org/" class="work-title">🐋 Melville</a>
-            <span class="work-author">Herman Melville</span>
-          </td>
-          <td class="date-cell" data-sort="20260403">2026-04-03</td>
-          <td class="date-cell" data-sort="20260503">2026-05-03</td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td class="num" data-sort="43463">43,463</td>
-          <td class="num" data-sort="1232881">1,232,881</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Homer">
-            <a href="https://homer.contabulate.org/" class="work-title">🏛 Homer</a>
-            <span class="work-author">Iliad &amp; Odyssey</span>
-          </td>
-          <td class="date-cell" data-sort="20260331">2026-03-31</td>
-          <td class="date-cell" data-sort="20260517">2026-05-17</td>
-          <td data-sort="Greek"><span class="language-tag">Greek</span></td>
-          <td class="num" data-sort="30679">30,679</td>
-          <td class="num" data-sort="199084">199,084</td>
-          <td class="num" data-sort="0">0</td>
-          <td>
-            <ul class="sample-query-list">
-              <li><a href="https://homer.contabulate.org/?cs=1&zr=0&hl=1&q=%CE%BE%28%CE%AD%7C%CE%B5%5B%E1%BF%96%CE%AF%5D%29%CE%BD&nm=1&gran=play&mm=regex&ts=%255B%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%255D&qt=%255B%2522%25CE%25BE%28%25CE%25AD%257C%25CE%25B5%255B%25E1%25BF%2596%25CE%25AF%255D%29%25CE%25BD%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%252C%2522%25CE%25BC%25CE%25AD%25CE%25BD%28%25CE%25BF%25CF%2582%257C%25CE%25B5%25CE%25BF%25CF%2582%257C%25CE%25B5%25CF%2585%25CF%2582%257C%25CE%25B5%255B%25CF%258A%25CE%25B9%255D%257C%25CE%25B5%25CE%25B1%257C%25CE%25B5%25CF%2583%25CF%2583%25CE%25B9%25CE%25BD%253F%29%2522%255D&sk=t2_pct&sd=desc&co=location%2Ctitle%2Cgenre%2Cnum_chapters%2Cnum_lines%2Cngram_count%2Ct0_pct%2Ct1_count%2Ct2_pct%2Ct3_count" class="starter-query-link">Poem of Force, Poem of Hospitality</a></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td data-sort="Tanakh">
-            <a href="https://tanakh.contabulate.org/" class="work-title">🕎 Tanakh</a>
-            <span class="work-author">Hebrew Bible</span>
-          </td>
-          <td class="date-cell" data-sort="20260331">2026-03-31</td>
-          <td class="date-cell" data-sort="20260609">2026-06-09</td>
-          <td data-sort="Hebrew"><span class="language-tag">Hebrew</span></td>
-          <td class="num" data-sort="39617">39,617</td>
-          <td class="num" data-sort="308669">308,669</td>
-          <td class="num" data-sort="74">74</td>
-          <td>
-            <ul class="sample-query-list">
-              <li><a href="https://tanakh.contabulate.org/?cs=1&zr=1&hl=1&q=%D7%99%D7%94%D7%95%D7%94%7C%D7%90%D7%9C%D7%94%D7%99%D7%9D&nm=1&gran=play&mm=regex&ts=%255B%257B%2522t%2522%253A%2522%25D7%2599%25D7%2594%25D7%2595%25D7%2594%257C%25D7%2590%25D7%259C%25D7%2594%25D7%2599%25D7%259D%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%255D&sk=t0_count&sd=asc&co=location%2Ctitle%2Cgenre%2Cnum_chapters%2Cnum_lines%2Cngram_count%2Ct0_count" class="starter-query-link">Which are the most "God"-less books in the Hebrew Bible?</a></li>
-              <li><a href="https://tanakh.contabulate.org/?cs=1&zr=0&commentators=rashi%2Cramban&hl=1&q=&nm=1&gran=play&mm=exact&sk=commentary_interest&sd=desc&co=location%2Ctitle%2Cgenre%2Cnum_chapters%2Cnum_lines%2Ccommentary_interest%2Ccommentary_rashi%2Ccommentary_ramban%2Cngram_count" class="starter-query-link">What is the only book in the Tanakh not in the Torah to make it to the top five books by commentator interest?</a></li>
-              <li><a href="https://tanakh.contabulate.org/?cs=1&zr=0&commentators=rashi%2Cramban&hl=1&q=&nm=1&gran=verse&mm=exact&sk=commentary_rashi&sd=desc&co=location%2Cplay_title%2Cact%2Cscene%2Cline%2Ccommentary_rashi%2Ccommentary_ramban%2Ccommentary_interest%2Cngram_count" class="starter-query-link">What were Rashi's favorite (most-cited) verses, compared with Ramban and other commentators?</a></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td data-sort="Aeneid">
-            <a href="https://aeneid.contabulate.org/" class="work-title">⚔️ Aeneid</a>
-            <span class="work-author">Virgil</span>
-          </td>
-          <td class="date-cell" data-sort="20260327">2026-03-27</td>
-          <td class="date-cell" data-sort="20260503">2026-05-03</td>
-          <td data-sort="Latin"><span class="language-tag">Latin</span></td>
-          <td class="num" data-sort="16626">16,626</td>
-          <td class="num" data-sort="63741">63,741</td>
-          <td class="num" data-sort="0">0</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Divine Comedy">
-            <a href="https://dante.contabulate.org/" class="work-title">🔥 Divine Comedy</a>
-            <span class="work-author">Dante Alighieri</span>
-          </td>
-          <td class="date-cell" data-sort="20260327">2026-03-27</td>
-          <td class="date-cell" data-sort="20260510">2026-05-10</td>
-          <td data-sort="Italian"><span class="language-tag">Italian</span></td>
-          <td class="num" data-sort="12831">12,831</td>
-          <td class="num" data-sort="101603">101,603</td>
-          <td class="num" data-sort="77">77</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="Luther Bible">
-            <a href="https://luther.contabulate.org/" class="work-title">✝️ Luther Bible</a>
-          </td>
-          <td class="date-cell" data-sort="20260327">2026-03-27</td>
-          <td class="date-cell" data-sort="20260609">2026-06-09</td>
-          <td data-sort="German"><span class="language-tag">German</span></td>
-          <td class="num" data-sort="20563">20,563</td>
-          <td class="num" data-sort="697989">697,989</td>
-          <td class="num" data-sort="315">315</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td data-sort="King James Bible">
-            <a href="https://kjv.contabulate.org/" class="work-title">📖 King James Bible</a>
-          </td>
-          <td class="date-cell" data-sort="20260317">2026-03-17</td>
-          <td class="date-cell" data-sort="20260609">2026-06-09</td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td class="num" data-sort="12483">12,483</td>
-          <td class="num" data-sort="792095">792,095</td>
-          <td class="num" data-sort="315">315</td>
-          <td>
-            <ul class="sample-query-list">
-              <li>The quantity of mercy... <a href="https://kjv.contabulate.org/?cs=1&zr=0&hl=1&q=law&nm=1&gran=genre&mm=&ts=%255B%257B%2522t%2522%253A%2522law%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%252C%257B%2522t%2522%253A%2522mercy%2522%252C%2522m%2522%253A%2522exact%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522mercy%2522%255D&sk=t0_pct&sd=desc&co=genre%2Cnum_plays%2Cngram_count%2Ct0_pct%2Ct1_pct" class="starter-query-link">“law” vs. “mercy” by testament</a></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td data-sort="Shakespeare">
-            <a href="https://shakespeare.contabulate.org/" class="work-title">🎭 Shakespeare</a>
-            <span class="work-author">Plays</span>
-          </td>
-          <td class="date-cell" data-sort="20250909">2025-09-09</td>
-          <td class="date-cell" data-sort="20260519">2026-05-19</td>
-          <td data-sort="English"><span class="language-tag">English</span></td>
-          <td class="num" data-sort="23572">23,572</td>
-          <td class="num" data-sort="828823">828,823</td>
-          <td class="num" data-sort="0">0</td>
-          <td>
-            <ul class="sample-query-list">
-              <li><a href="https://shakespeare.contabulate.org/?cs=1&zr=0&hl=1&q=dead%7Cdeath&nm=1&gran=character&mm=regex&ts=%255B%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522count%2522%257D%252C%257B%2522t%2522%253A%2522dead%257Cdeath%2522%252C%2522m%2522%253A%2522regex%2522%252C%2522n%2522%253A1%252C%2522d%2522%253A%2522pct%2522%257D%255D&qt=%255B%2522dead%257Cdeath%2522%255D&sk=t0_count&sd=desc&co=name%2Cgender%2Cplay_title%2Cnum_speeches%2Cngram_count%2Ct0_count%2Ct1_pct&s_ft_gender=F" class="starter-query-link">Who is Shakespeare's most death-obsessed female character?</a></li>
-            </ul>
-          </td>
-        </tr>
+        <tr><td colspan="8" class="muted">Loading corpora…</td></tr>
       </tbody>
       <tfoot>
         <tr class="totals-row">
-          <td>11 corpora</td>
-          <td>2025–2026</td>
-          <td>2026-05-21</td>
-          <td>6 languages</td>
-          <td class="num">238,860</td>
-          <td class="num">4,428,051</td>
-          <td class="num">630</td>
-          <td></td>
+          <td colspan="8"></td>
         </tr>
       </tfoot>
     </table>
@@ -250,43 +72,165 @@
   <span class="footer-sep">·</span>
   <a href="https://github.com/brainheart">Open source on GitHub</a>
   <span class="footer-sep">·</span>
-  <span>build 2026-06-09T16:09:29-0400</span>
+  <span id="siteUpdated"></span>
 </footer>
 
 <script>
 (function () {
   'use strict';
+
+  // Adding an instance to the hub is exactly one edit: append its base
+  // URL here. Everything else — title, stats, sample queries, "Updated"
+  // date — is fetched live from that instance's own /instance.json.
+  const INSTANCES_URL = 'instances.json';
+  const FETCH_TIMEOUT_MS = 8000;
+
   const table = document.getElementById('worksTable');
-  if (!table) return;
-  const thead = table.querySelector('thead');
   const tbody = table.querySelector('tbody');
-  const ths = Array.from(thead.querySelectorAll('th[data-key]'));
+  const tfootRow = table.querySelector('tfoot tr');
+  const ths = Array.from(table.querySelectorAll('thead th[data-key]'));
 
-  let currentKey = null;
-  let currentDir = 'asc';
-
-  function sortValue(td, type) {
-    const raw = td.getAttribute('data-sort');
-    if (raw == null) return type === 'number' ? 0 : '';
-    return type === 'number' ? parseFloat(raw) || 0 : raw.toLowerCase();
+  const numberFormatter = new Intl.NumberFormat('en-US');
+  function fmtNum(n) {
+    return Number.isFinite(n) ? numberFormatter.format(n) : '';
   }
 
-  function doSort(key, type) {
-    if (currentKey === key) {
-      currentDir = currentDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      currentKey = key;
-      currentDir = type === 'number' ? 'desc' : 'asc';
+  // Instance labels are plural ("works", "verses"); singularize the common
+  // case so a single-text corpus like Thucydides reads "1 work", not "1 works".
+  function singularize(label, count) {
+    return count === 1 && /s$/.test(label) ? label.slice(0, -1) : label;
+  }
+
+  async function fetchWithTimeout(url, ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
     }
+  }
 
-    const colIdx = ths.findIndex(th => th.getAttribute('data-key') === key);
-    if (colIdx < 0) return;
+  function hostnameTitle(url) {
+    try {
+      return new URL(url).hostname.split('.')[0];
+    } catch (e) {
+      return url;
+    }
+  }
 
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    rows.sort((a, b) => {
-      const va = sortValue(a.children[colIdx], type);
-      const vb = sortValue(b.children[colIdx], type);
-      let cmp = 0;
+  async function loadInstance(url) {
+    const base = url.endsWith('/') ? url : url + '/';
+    try {
+      const data = await fetchWithTimeout(base + 'instance.json', FETCH_TIMEOUT_MS);
+      const stats = data.stats || {};
+      return {
+        ok: true,
+        url: base,
+        emoji: data.emoji || '📄',
+        title: data.title || hostnameTitle(base),
+        language: data.language || '',
+        updated: data.updated || '',
+        texts: Number(stats.texts),
+        textLabel: stats.text_label || 'texts',
+        segments: Number(stats.segments),
+        segmentLabel: stats.segment_label || 'segments',
+        distinctWords: Number(stats.distinct_words),
+        words: Number(stats.words),
+        sampleQueries: Array.isArray(data.sample_queries) ? data.sample_queries : [],
+      };
+    } catch (e) {
+      console.warn(`Could not load ${base}instance.json:`, e);
+      return {
+        ok: false,
+        url: base,
+        emoji: '❔',
+        title: hostnameTitle(base),
+        language: '',
+        updated: '',
+        texts: NaN,
+        segments: NaN,
+        distinctWords: NaN,
+        words: NaN,
+        sampleQueries: [],
+      };
+    }
+  }
+
+  function renderSampleQueries(queries) {
+    if (!queries.length) return '';
+    const items = queries.map(q => {
+      const label = escapeHTML(q.label || 'Explore');
+      const href = escapeAttr(q.url || '#');
+      return `<li><a href="${href}" class="starter-query-link">${label}</a></li>`;
+    }).join('');
+    return `<ul class="sample-query-list">${items}</ul>`;
+  }
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+  }
+  function escapeAttr(s) {
+    return escapeHTML(s);
+  }
+
+  function renderRow(row) {
+    const tr = document.createElement('tr');
+    if (!row.ok) tr.classList.add('is-unavailable');
+    const titleCell = row.ok
+      ? `<a href="${escapeAttr(row.url)}" class="work-title">${row.emoji} ${escapeHTML(row.title)}</a>`
+      : `<span class="work-title muted">${row.emoji} ${escapeHTML(row.title)}</span><span class="work-author">temporarily unavailable</span>`;
+    tr.innerHTML = `
+      <td>${titleCell}</td>
+      <td class="date-cell">${escapeHTML(row.updated)}</td>
+      <td>${row.language ? `<span class="language-tag">${escapeHTML(row.language)}</span>` : ''}</td>
+      <td class="num">${Number.isFinite(row.texts) ? `${fmtNum(row.texts)} ${escapeHTML(singularize(row.textLabel, row.texts))}` : ''}</td>
+      <td class="num">${Number.isFinite(row.segments) ? `${fmtNum(row.segments)} ${escapeHTML(singularize(row.segmentLabel, row.segments))}` : ''}</td>
+      <td class="num">${fmtNum(row.distinctWords)}</td>
+      <td class="num">${fmtNum(row.words)}</td>
+      <td>${renderSampleQueries(row.sampleQueries)}</td>
+    `;
+    return tr;
+  }
+
+  function renderTotals(rows) {
+    const ok = rows.filter(r => r.ok);
+    const sum = key => ok.reduce((acc, r) => acc + (Number.isFinite(r[key]) ? r[key] : 0), 0);
+    const languages = new Set(ok.map(r => r.language).filter(Boolean));
+    const latestUpdate = ok.reduce((acc, r) => (r.updated > acc ? r.updated : acc), '');
+    tfootRow.innerHTML = `
+      <td>${rows.length} corpora</td>
+      <td class="date-cell">${escapeHTML(latestUpdate)}</td>
+      <td>${languages.size} language${languages.size === 1 ? '' : 's'}</td>
+      <td class="num">${fmtNum(sum('texts'))}</td>
+      <td class="num">${fmtNum(sum('segments'))}</td>
+      <td class="num">${fmtNum(sum('distinctWords'))}</td>
+      <td class="num">${fmtNum(sum('words'))}</td>
+      <td></td>
+    `;
+  }
+
+  let rowsData = [];
+  let currentKey = 'updated';
+  let currentDir = 'desc';
+
+  function sortValue(row, key) {
+    if (key === 'title') return (row.title || '').toLowerCase();
+    if (key === 'language') return (row.language || '').toLowerCase();
+    if (key === 'updated') return row.updated || '';
+    const v = row[key === 'distinct_words' ? 'distinctWords' : key];
+    return Number.isFinite(v) ? v : -Infinity;
+  }
+
+  function renderRows() {
+    const sorted = rowsData.slice().sort((a, b) => {
+      // Rows whose fetch failed always sort last, regardless of direction
+      if (a.ok !== b.ok) return a.ok ? -1 : 1;
+      const va = sortValue(a, currentKey);
+      const vb = sortValue(b, currentKey);
+      let cmp;
       if (typeof va === 'number' && typeof vb === 'number') {
         cmp = va - vb;
       } else {
@@ -294,8 +238,8 @@
       }
       return currentDir === 'asc' ? cmp : -cmp;
     });
-
-    rows.forEach(r => tbody.appendChild(r));
+    tbody.innerHTML = '';
+    sorted.forEach(row => tbody.appendChild(renderRow(row)));
     updateIndicators();
   }
 
@@ -312,11 +256,38 @@
     th.style.cursor = 'pointer';
     th.style.userSelect = 'none';
     th.addEventListener('click', () => {
-      doSort(th.getAttribute('data-key'), th.getAttribute('data-type') || 'text');
+      const key = th.getAttribute('data-key');
+      if (currentKey === key) {
+        currentDir = currentDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentKey = key;
+        currentDir = th.getAttribute('data-type') === 'number' ? 'desc' : 'asc';
+      }
+      renderRows();
     });
   });
 
-  doSort('updated', 'number');
+  async function init() {
+    let urls = [];
+    try {
+      urls = await fetchWithTimeout(INSTANCES_URL, FETCH_TIMEOUT_MS);
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">Could not load the instance list.</td></tr>';
+      console.error('Failed to load instances.json:', e);
+      return;
+    }
+    rowsData = await Promise.all(urls.map(loadInstance));
+    renderRows();
+    renderTotals(rowsData);
+  }
+
+  init();
+
+  const el = document.getElementById('siteUpdated');
+  const d = new Date(document.lastModified);
+  if (el && !isNaN(d)) {
+    el.textContent = 'Updated ' + d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
 })();
 </script>
 
