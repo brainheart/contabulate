@@ -46,12 +46,12 @@
       <thead>
         <tr>
           <th data-key="title" data-type="text">Corpus</th>
+          <th data-key="created" data-type="number">Created</th>
           <th data-key="updated" data-type="number">Updated</th>
           <th data-key="language" data-type="text">Language</th>
-          <th data-key="texts" data-type="number" class="num">Texts</th>
-          <th data-key="segments" data-type="number" class="num">Segments</th>
-          <th data-key="distinct_words" data-type="number" class="num">Distinct Words</th>
           <th data-key="words" data-type="number" class="num">Total Words</th>
+          <th data-key="commentaries" data-type="number" class="num">Commentaries</th>
+          <th data-key="comments" data-type="number" class="num">Comments</th>
           <th>Fun Sample Queries</th>
         </tr>
       </thead>
@@ -80,8 +80,8 @@
   'use strict';
 
   // Adding an instance to the hub is exactly one edit: append its base
-  // URL here. Everything else — title, stats, sample queries, "Updated"
-  // date — is fetched live from that instance's own /instance.json.
+  // URL here. Everything else — title, dates, stats, and sample queries — is
+  // fetched live from that instance's own /instance.json.
   const INSTANCES_URL = 'instances.json';
   const FETCH_TIMEOUT_MS = 8000;
 
@@ -93,12 +93,6 @@
   const numberFormatter = new Intl.NumberFormat('en-US');
   function fmtNum(n) {
     return Number.isFinite(n) ? numberFormatter.format(n) : '';
-  }
-
-  // Instance labels are plural ("works", "verses"); singularize the common
-  // case so a single-text corpus like Thucydides reads "1 work", not "1 works".
-  function singularize(label, count) {
-    return count === 1 && /s$/.test(label) ? label.slice(0, -1) : label;
   }
 
   async function fetchWithTimeout(url, ms) {
@@ -132,13 +126,11 @@
         emoji: data.emoji || '📄',
         title: data.title || hostnameTitle(base),
         language: data.language || '',
+        created: data.created || '',
         updated: data.updated || '',
-        texts: Number(stats.texts),
-        textLabel: stats.text_label || 'texts',
-        segments: Number(stats.segments),
-        segmentLabel: stats.segment_label || 'segments',
-        distinctWords: Number(stats.distinct_words),
         words: Number(stats.words),
+        commentaries: Number(stats.commentaries),
+        comments: Number(stats.comments),
         sampleQueries: Array.isArray(data.sample_queries) ? data.sample_queries : [],
       };
     } catch (e) {
@@ -149,11 +141,11 @@
         emoji: '❔',
         title: hostnameTitle(base),
         language: '',
+        created: '',
         updated: '',
-        texts: NaN,
-        segments: NaN,
-        distinctWords: NaN,
         words: NaN,
+        commentaries: NaN,
+        comments: NaN,
         sampleQueries: [],
       };
     }
@@ -184,12 +176,12 @@
       : `<span class="work-title muted">${row.emoji} ${escapeHTML(row.title)}</span><span class="work-author">temporarily unavailable</span>`;
     tr.innerHTML = `
       <td>${titleCell}</td>
+      <td class="date-cell">${escapeHTML(row.created)}</td>
       <td class="date-cell">${escapeHTML(row.updated)}</td>
       <td>${row.language ? `<span class="language-tag">${escapeHTML(row.language)}</span>` : ''}</td>
-      <td class="num">${Number.isFinite(row.texts) ? `${fmtNum(row.texts)} ${escapeHTML(singularize(row.textLabel, row.texts))}` : ''}</td>
-      <td class="num">${Number.isFinite(row.segments) ? `${fmtNum(row.segments)} ${escapeHTML(singularize(row.segmentLabel, row.segments))}` : ''}</td>
-      <td class="num">${fmtNum(row.distinctWords)}</td>
       <td class="num">${fmtNum(row.words)}</td>
+      <td class="num">${fmtNum(row.commentaries)}</td>
+      <td class="num">${fmtNum(row.comments)}</td>
       <td>${renderSampleQueries(row.sampleQueries)}</td>
     `;
     return tr;
@@ -199,15 +191,21 @@
     const ok = rows.filter(r => r.ok);
     const sum = key => ok.reduce((acc, r) => acc + (Number.isFinite(r[key]) ? r[key] : 0), 0);
     const languages = new Set(ok.map(r => r.language).filter(Boolean));
+    const creationYears = ok.map(r => r.created.slice(0, 4)).filter(Boolean).sort();
+    const creationRange = creationYears.length
+      ? creationYears[0] === creationYears[creationYears.length - 1]
+        ? creationYears[0]
+        : `${creationYears[0]}–${creationYears[creationYears.length - 1]}`
+      : '';
     const latestUpdate = ok.reduce((acc, r) => (r.updated > acc ? r.updated : acc), '');
     tfootRow.innerHTML = `
       <td>${rows.length} corpora</td>
+      <td class="date-cell">${escapeHTML(creationRange)}</td>
       <td class="date-cell">${escapeHTML(latestUpdate)}</td>
       <td>${languages.size} language${languages.size === 1 ? '' : 's'}</td>
-      <td class="num">${fmtNum(sum('texts'))}</td>
-      <td class="num">${fmtNum(sum('segments'))}</td>
-      <td class="num">${fmtNum(sum('distinctWords'))}</td>
       <td class="num">${fmtNum(sum('words'))}</td>
+      <td class="num">${fmtNum(sum('commentaries'))}</td>
+      <td class="num">${fmtNum(sum('comments'))}</td>
       <td></td>
     `;
   }
@@ -219,8 +217,9 @@
   function sortValue(row, key) {
     if (key === 'title') return (row.title || '').toLowerCase();
     if (key === 'language') return (row.language || '').toLowerCase();
+    if (key === 'created') return row.created || '';
     if (key === 'updated') return row.updated || '';
-    const v = row[key === 'distinct_words' ? 'distinctWords' : key];
+    const v = row[key];
     return Number.isFinite(v) ? v : -Infinity;
   }
 
