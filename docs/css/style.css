@@ -47,18 +47,27 @@ a:hover {
 
 /* Header */
 .site-header {
-  text-align: center;
-  padding: 3rem 1.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem 1rem;
 }
 
 .logo {
-  margin: 0 auto 1rem;
+  flex: 0 0 auto;
   width: 120px;
   height: 120px;
 }
 
 .logo svg {
   display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.header-copy {
+  text-align: left;
 }
 
 .site-title {
@@ -288,7 +297,13 @@ main {
   }
 
   .site-header {
-    padding: 2rem 1rem 1rem;
+    gap: 1rem;
+    padding: 1.5rem 1rem 0.75rem;
+  }
+
+  .logo {
+    width: 88px;
+    height: 88px;
   }
 
   main {
