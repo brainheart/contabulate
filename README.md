@@ -1,6 +1,6 @@
 # Contabulate
 
-**Table-based exploration of great literary works.**
+**Table-based exploration of literary works.**
 
 Landing page for the Contabulate project at [contabulate.org](https://contabulate.org).
 
