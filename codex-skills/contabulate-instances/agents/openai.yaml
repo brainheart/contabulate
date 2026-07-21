@@ -1,0 +1,4 @@
+interface:
+  display_name: "Contabulate Instances"
+  short_description: "Create and maintain Contabulate instances"
+  default_prompt: "Use $contabulate-instances to create or update a Contabulate instance safely."

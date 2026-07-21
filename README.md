@@ -34,6 +34,19 @@ directory. `docs/index.html` renders the corpus table entirely client-side
 from `docs/instances.json` plus each instance's live `/instance.json`; rows
 that fail to load are shown as unavailable rather than breaking the page.
 
+## Codex skills
+
+Reusable Contabulate workflows live in `codex-skills/`. After cloning or
+pulling this repository on a development machine, install user-level links so
+the skills are available from any project on that machine:
+
+```sh
+./codex-skills/install-user-links.sh
+```
+
+Invoke them explicitly as `$contabulate-instances` and
+`$contabulate-style-tables`.
+
 ## Author
 
 [Reinhard Engels](https://everydaysystems.com)

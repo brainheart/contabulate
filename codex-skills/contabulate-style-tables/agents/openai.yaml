@@ -1,0 +1,4 @@
+interface:
+  display_name: "Contabulate Style Tables"
+  short_description: "Build polished exploratory data tables"
+  default_prompt: "Use $contabulate-style-tables to build this table with Contabulate’s interaction and visual conventions."
