@@ -47,6 +47,13 @@ the skills are available from any project on that machine:
 Invoke them explicitly as `$contabulate-instances` and
 `$contabulate-style-tables`.
 
+## OpenClaw skill
+
+The project-owned OpenClaw workflow lives in
+[`openclaw-skills/contabulate`](openclaw-skills/contabulate). The active
+OpenClaw workspace uses a symlink to this canonical directory, so updates are
+tracked here without maintaining a second copy.
+
 ## Author
 
 [Reinhard Engels](https://everydaysystems.com)
