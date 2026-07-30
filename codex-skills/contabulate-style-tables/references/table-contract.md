@@ -194,6 +194,14 @@ Lazy-load heavyweight row text or detail records. Preload only during idle time 
 
 Escape all source text and labels before HTML insertion. Treat URL state as untrusted: validate keys, types, enums, ranges, regexes, and column names. Avoid `innerHTML` for content unless values are escaped centrally.
 
+Capability-gate optional row controls as a complete behavior. If the backing
+data or operation is unavailable, hide the row action, related toolbar toggle,
+editor, styling state, and URL parameter together; show one concise unavailable
+note where the toolbar control would otherwise appear. Never leave a control
+that merely changes row styling while implying that it changed the result set.
+Tests should cover both supported and unsupported states, including stale URL
+and persisted-browser state.
+
 ## Acceptance checklist
 
 - [ ] Stable row and column keys; raw typed values separated from display.
@@ -205,6 +213,7 @@ Escape all source text and labels before HTML insertion. Treat URL state as untr
 - [ ] Back/Forward retraces drills and navigation-like scopes.
 - [ ] Count drills and ancestor filters are semantically distinct and predictable.
 - [ ] Optional-column groups disappear when unsupported; keyboard and mobile access work.
+- [ ] Optional row actions and their toolbar, URL, and persisted state are gated together.
 - [ ] Reordering does not accidentally sort and has an accessible alternative if required.
 - [ ] Color thresholds use the full filtered result, legend and contrast are correct, and ties/constant columns behave.
 - [ ] Highlights are escaped and regex-safe; rank hints work with hover and tap.

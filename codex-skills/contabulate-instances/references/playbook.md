@@ -5,6 +5,7 @@
 - [Workspace and donor map](#workspace-and-donor-map)
 - [Before editing](#before-editing)
 - [Corpus and build contract](#corpus-and-build-contract)
+- [Proper-name filtering contract](#proper-name-filtering-contract)
 - [Instance metadata contract](#instance-metadata-contract)
 - [Hub update](#hub-update)
 - [Verification matrix](#verification-matrix)
@@ -94,6 +95,46 @@ Tests should pin corpus facts that catch parser drift rather than every generate
 - required metric fields and plausible aggregates;
 - optional data present only when supported.
 
+## Proper-name filtering contract
+
+Treat “Hide proper names” as a corpus-data capability, not a generic row-table
+control. A corpus is supported only when the build can supply a reviewed or
+source-annotated list. Speaker records and morphology tags are good sources;
+capitalization alone is not, especially for German, and book-heading records
+must not be mistaken for people.
+
+Publish `docs/data/character_name_filter_config.json` from the build with:
+
+- `enabled: true`, a short `source` description, and nonempty
+  `global_additions` or `play_additions` when the corpus is supported;
+- `enabled: false`, an explanatory note, and empty addition/removal collections
+  when it is not.
+
+Keep the generated file and its builder in the same change. Existing Tanakh
+output predates the explicit flag, so the shared client accepts a missing flag
+only as a compatibility case when real terms are present; new and rebuilt
+instances must write the flag.
+
+The UI contract is all-or-nothing:
+
+- Supported word, bigram, and trigram views show the toggle. A one-text scope
+  may also show the editable term list and per-row hide/unhide control.
+- Unsupported vocabulary views show
+  “Proper-name filtering isn’t available for this corpus yet.” They do not show
+  the toggle, editor, per-row controls, dimmed name rows, or honor stale `xn=1`
+  URL state and browser overrides.
+- Non-vocabulary views show neither the control nor the unavailable note.
+- Store user refinements under `contabulateNameFilterOverrides`; read the old
+  `tanakhNameFilterOverrides` key as a migration fallback.
+- Tokenize names with Unicode letters and combining marks so Hebrew, Greek,
+  accented Latin, and other supported scripts behave consistently.
+
+Port `docs/js/name-filter.js`, the index-page availability gates, the generated
+config, the build writer, and tests together. For a supported corpus, test that
+the toggle reduces the result set and that the unavailable note stays hidden.
+For an unsupported corpus, test the note, absence of row controls and dimming,
+and rejection of a stale deep link or local override.
+
 ## Instance metadata contract
 
 `instance-meta.json` is the curated source. It should contain:
@@ -172,6 +213,8 @@ Do not use `npm test` blindly: some older `package.json` files still contain the
 - `created` drift: creation date is release history, not build time.
 - Loading overlay hang: `.is-hidden` must win against overlay display rules, and the overlay must dismiss when required data settles, including failures.
 - Scope loss: location/genre filters should follow appropriate granularity switches; word/bigram/trigram views share vocabulary scope.
+- Partial proper-name port: do not expose per-row edits unless built-in name
+  data is enabled; otherwise clicks appear to work but only dim a row.
 - Misleading aggregation: derive ratios from summed numerators and denominators, not averages of averages.
 - Incorrect CSV: export the filtered result set across every page, using visible columns in visible order.
 - Giant diffs without explanation: inspect counts and IDs before accepting regenerated JSON.
