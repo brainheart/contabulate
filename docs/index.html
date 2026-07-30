@@ -84,7 +84,10 @@
   // Adding an instance to the hub is exactly one edit: append its base
   // URL here. Everything else — title, dates, stats, and sample queries — is
   // fetched live from that instance's own /instance.json.
-  const INSTANCES_URL = 'instances.json';
+  const INSTANCE_LIST_URLS = [
+    'instances.json?source=hub',
+    'https://raw.githubusercontent.com/brainheart/contabulate/main/docs/instances.json',
+  ];
   const FETCH_TIMEOUT_MS = 8000;
 
   const table = document.getElementById('worksTable');
@@ -101,12 +104,29 @@
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ms);
     try {
-      const res = await fetch(url, { signal: controller.signal });
+      const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
     } finally {
       clearTimeout(timer);
     }
+  }
+
+  async function loadInstanceUrls() {
+    let lastError = null;
+    for (const url of INSTANCE_LIST_URLS) {
+      try {
+        const urls = await fetchWithTimeout(url, FETCH_TIMEOUT_MS);
+        if (!Array.isArray(urls) || !urls.every(item => typeof item === 'string')) {
+          throw new Error('Instance list must be an array of URLs');
+        }
+        return urls;
+      } catch (e) {
+        lastError = e;
+        console.warn(`Could not load instance list from ${url}:`, e);
+      }
+    }
+    throw lastError || new Error('No instance-list source configured');
   }
 
   function hostnameTitle(url) {
@@ -271,10 +291,10 @@
   async function init() {
     let urls = [];
     try {
-      urls = await fetchWithTimeout(INSTANCES_URL, FETCH_TIMEOUT_MS);
+      urls = await loadInstanceUrls();
     } catch (e) {
       tbody.innerHTML = '<tr><td colspan="8" class="muted">Could not load the instance list.</td></tr>';
-      console.error('Failed to load instances.json:', e);
+      console.error('Failed to load the instance list from every source:', e);
       return;
     }
     rowsData = await Promise.all(urls.map(loadInstance));

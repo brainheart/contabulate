@@ -189,6 +189,12 @@ The hub has two deliberate updates for a new instance:
 
 Do not hand-edit `docs/index.html` with corpus stats. It fetches `<base>/instance.json` with a timeout and renders unavailable instances without breaking the table. Before declaring the hub update done, validate JSON, inspect the hub diff, and—after the instance is live—confirm the endpoint is publicly fetchable and CORS/static hosting behavior is normal.
 
+Keep the hub resilient to a transient CDN failure for `instances.json`. Fetch a
+cache-busted same-origin URL first, then retry the canonical
+`raw.githubusercontent.com` copy of the checked-in file before showing a
+page-level error. Validate that either response is an array of URL strings.
+Individual `/instance.json` failures should still degrade one row at a time.
+
 ## Verification matrix
 
 Run in this order:
@@ -219,6 +225,9 @@ Do not use `npm test` blindly: some older `package.json` files still contain the
 - Incorrect CSV: export the filtered result set across every page, using visible columns in visible order.
 - Giant diffs without explanation: inspect counts and IDs before accepting regenerated JSON.
 - Incomplete hub work: `docs/instances.json` powers the page, while `README.md` remains the repository catalog; update both.
+- Brittle hub bootstrap: a transient Pages/CDN 503 for `instances.json` must
+  not blank the entire table; retain the checked-in raw-file fallback and test
+  the primary-source failure path.
 
 ## Maintaining this reference
 
