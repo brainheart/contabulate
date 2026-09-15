@@ -11,6 +11,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | Tanakh (Hebrew Bible) | Hebrew | [tanakh.contabulate.org](https://tanakh.contabulate.org) |
 | Luther Bible | German | [luther.contabulate.org](https://luther.contabulate.org) |
 | King James Bible | English | [kjv.contabulate.org](https://kjv.contabulate.org) |
+| Greek New Testament (SBLGNT) | Ancient Greek | [gnt.contabulate.org](https://gnt.contabulate.org) |
 | Shakespeare (Complete Works) | English | [shakespeare.contabulate.org](https://shakespeare.contabulate.org) |
 | Melville (Herman Melville) | English | [melville.contabulate.org](https://melville.contabulate.org) |
 | Hawthorne (Nathaniel Hawthorne) | English | [hawthorne.contabulate.org](https://hawthorne.contabulate.org) |

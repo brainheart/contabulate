@@ -5,6 +5,7 @@
 - `brainheart/contabulate` → `contabulate.org`
 - `brainheart/shakespeare-contabulate` → `shakespeare.contabulate.org`
 - `brainheart/kjv-contabulate` → `kjv.contabulate.org`
+- `brainheart/gnt-contabulate` → `gnt.contabulate.org` (SBL Greek New Testament; native Pages HTTPS verified 2026-09-15)
 - `brainheart/tanakh-contabulate` → `tanakh.contabulate.org`
 - `brainheart/homer-contabulate` → `homer.contabulate.org`
 - `brainheart/aeneid-contabulate` → `aeneid.contabulate.org`

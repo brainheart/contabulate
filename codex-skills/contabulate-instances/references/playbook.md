@@ -25,6 +25,7 @@ Choose donors by behavior and corpus topology:
 - `instances/austen-contabulate`: clean recent prose instance built from scratch; seven works, chapter/paragraph hierarchy, integrated metrics and metadata generation.
 - `instances/tanakh-contabulate`: richest history of shared table advances; vocabulary views, drills, history sync, filters, metrics, commentary, Unicode normalization.
 - `instances/kjv-contabulate` or `luther-contabulate`: Bible hierarchy plus readable commentary records.
+- `/Users/klaus/Projects/gnt-contabulate` (verified 2026-09-15): Greek Bible donor with pinned SBLGNT sources, independent MorphGNT verification, explicit commentary versification, Unicode highlighting, phrase denominators that respect verse boundaries, and reload-safe column order. Created directly under Projects to follow the current parent AGENTS.md; it is not a nested hub instance.
 - `instances/shakespeare-contabulate`: character rows and character-detail behavior.
 - `instances/melville-contabulate` or `hawthorne-contabulate`: large multi-work prose corpora.
 - `instances/homer-contabulate` or `aeneid-contabulate`: poetry with book/line hierarchy.
@@ -94,6 +95,34 @@ Tests should pin corpus facts that catch parser drift rather than every generate
 - alignment between `chunks` and `lines`;
 - required metric fields and plausible aggregates;
 - optional data present only when supported.
+
+## Bible commentary and Greek source alignment
+
+Verified 2026-09-15 in `gnt-contabulate`:
+
+- Pin upstream edition commits and source hashes; do not silently mix publisher
+  text with morphology releases. A secondary source is useful for detecting
+  omissions, additions, and spelling differences, not automatically replacing
+  the primary edition's readings.
+- Compare commentary record IDs across every requested donor. KJV and Luther
+  can contain different subsets of the same upstream database because their
+  verse inventories differ. Union records before mapping, preserve per-file
+  provenance, and test that every source record is either retained or audited.
+- Separate canonical target verse IDs from the commentary source coordinates.
+  Handle merged and split verses explicitly, deduplicate a comment within each
+  target verse, retain source numbering in passage labels/links, and disclose
+  passage-level overlap. Never attach comments on absent verses to a neighbor.
+- Preserve editorial brackets while excluding apparatus pointers and their
+  numeric suffixes from corpus tokens. Record whether bracketed passages are
+  included in totals.
+- Verify Python/browser token agreement across the entire corpus. Greek needs
+  combining marks, NFC, elision handling, and Unicode-aware highlight boundaries;
+  JavaScript `\b` is insufficient. Include punctuation-separated phrases in
+  highlight tests and Greek question marks in sentence-count tests.
+- Phrase indexes that stop at verse boundaries require denominators summed
+  within verses, rather than the whole book's word count minus one or two.
+- Test a reordered-column URL after a fresh load, and inspect a mobile screenshot:
+  passing overflow assertions alone does not prove the toolbar controls fit.
 
 ## Proper-name filtering contract
 
