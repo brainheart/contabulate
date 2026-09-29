@@ -12,6 +12,8 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | Luther Bible | German | [luther.contabulate.org](https://luther.contabulate.org) |
 | King James Bible | English | [kjv.contabulate.org](https://kjv.contabulate.org) |
 | Greek New Testament (SBLGNT) | Ancient Greek | [gnt.contabulate.org](https://gnt.contabulate.org) |
+| Latin Vulgate (Clementine) | Latin | [vulgate.contabulate.org](https://vulgate.contabulate.org) |
+| Septuagint (Swete) | Ancient Greek | [septuagint.contabulate.org](https://septuagint.contabulate.org) |
 | Polyglot Bible (Masoretic Text · Septuagint/SBLGNT · Vulgate · Luther · KJV) | Hebrew, Greek, Latin, German, English | [polyglot.contabulate.org](https://polyglot.contabulate.org) |
 | Shakespeare (Complete Works) | English | [shakespeare.contabulate.org](https://shakespeare.contabulate.org) |
 | Melville (Herman Melville) | English | [melville.contabulate.org](https://melville.contabulate.org) |
