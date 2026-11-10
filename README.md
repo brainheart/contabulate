@@ -15,6 +15,7 @@ Landing page for the Contabulate project at [contabulate.org](https://contabulat
 | Latin Vulgate (Clementine) | Latin | [vulgate.contabulate.org](https://vulgate.contabulate.org) |
 | Septuagint (Swete) | Ancient Greek | [septuagint.contabulate.org](https://septuagint.contabulate.org) |
 | Polyglot Bible (Masoretic Text · Septuagint/SBLGNT · Vulgate · Luther · KJV) | Hebrew, Greek, Latin, German, English | [polyglot.contabulate.org](https://polyglot.contabulate.org) |
+| Quran (Tanzil text) | Arabic | [quran.contabulate.org](https://quran.contabulate.org) |
 | Shakespeare (Complete Works) | English | [shakespeare.contabulate.org](https://shakespeare.contabulate.org) |
 | Melville (Herman Melville) | English | [melville.contabulate.org](https://melville.contabulate.org) |
 | Hawthorne (Nathaniel Hawthorne) | English | [hawthorne.contabulate.org](https://hawthorne.contabulate.org) |

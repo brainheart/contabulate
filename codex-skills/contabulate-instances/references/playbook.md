@@ -26,6 +26,7 @@ Choose donors by behavior and corpus topology:
 - `instances/tanakh-contabulate`: richest history of shared table advances; vocabulary views, drills, history sync, filters, metrics, commentary, Unicode normalization.
 - `instances/kjv-contabulate` or `luther-contabulate`: Bible hierarchy plus readable commentary records.
 - `/Users/klaus/Projects/gnt-contabulate` (verified 2026-09-15): Greek Bible donor with pinned SBLGNT sources, independent MorphGNT verification, explicit commentary versification, Unicode highlighting, phrase denominators that respect verse boundaries, and reload-safe column order. Created directly under Projects to follow the current parent AGENTS.md; it is not a nested hub instance.
+- `/Users/klaus/Projects/quran-contabulate` (verified 2026-11-10): right-to-left Arabic donor built from the Septuagint shell. Verbatim-licensed source text, a vowel-mark-insensitive search form checked against the publisher's own unvocalized edition, highlighting that spans vocalized words, a display-only translation column, a pause-based replacement for the sentence metric, and a two-level corpus given a traditional middle level.
 - `instances/shakespeare-contabulate`: character rows and character-detail behavior.
 - `instances/melville-contabulate` or `hawthorne-contabulate`: large multi-work prose corpora.
 - `instances/homer-contabulate` or `aeneid-contabulate`: poetry with book/line hierarchy.
@@ -123,6 +124,50 @@ Verified 2026-09-15 in `gnt-contabulate`:
   within verses, rather than the whole book's word count minus one or two.
 - Test a reordered-column URL after a fresh load, and inspect a mobile screenshot:
   passing overflow assertions alone does not prove the toolbar controls fit.
+
+## Vocalized scripts and verbatim-licensed text
+
+Verified 2026-11-10 in `quran-contabulate`:
+
+- When a license allows verbatim copies only, the displayed text is the source
+  text, code point for code point. Do not NFC-normalize, trim, or re-order it.
+  Put all normalization in the search form, and test that every displayed row
+  equals the source record. Ship the publisher's notice next to the generated
+  data when the license asks for it.
+- A source may stack combining marks in a non-canonical order. Literals typed
+  into tests then differ from the text byte for byte while looking identical.
+  Compare such literals through NFC on both sides.
+- If the publisher offers an unvocalized edition, use it as an independent
+  check: the search form of every row should equal that edition's words.
+- Highlight a mark-free term in marked text by letting a run of marks follow
+  each letter, and require a non-letter, non-mark character between the words
+  of a phrase. Free-standing signs between words must not break a phrase.
+- Normalize regex sources and text-column filters the same way as terms, so a
+  pattern pasted with marks, or typed without them, still matches.
+- A display-only translation column makes a corpus readable to people who
+  cannot read its script. Label it as a reading aid, keep it out of the indexes
+  and counts, and say so in the page copy. The column filter still searches it.
+- Text without sentence punctuation needs an honest replacement for sentence
+  metrics. Define the unit, name the column after it, and state the rule in the
+  tooltip and the sources page.
+- A corpus with only two natural levels can use a traditional reading division
+  as the middle level. Keep the four-part location so drills work unchanged,
+  and mark the middle part visibly (for example `§34`) so the location is not
+  misread as a citation.
+- Word-level annotation (glosses, lemmas, roots) usually belongs to another
+  edition of the text. Align it to the displayed words verse by verse, and
+  test the exact number of words the alignment splits or joins; a silent
+  one-word shift mislabels everything after it. Check the annotation's own
+  word count first: one disputed word boundary can offset a whole file.
+- Reading aids for people who cannot read the script (a lookup by English
+  meaning, gloss columns) stay outside the indexes and counts, load
+  optionally, and are tested with their data file missing. A lookup inserts
+  ordinary terms or regexes, so links and counts keep working without it.
+  Build inserted regexes from the instance's own vocabulary and test that
+  each matches exactly the intended forms. Say when a spelling-based pattern
+  also catches other words written the same way.
+- Prefix CSV downloads with a byte-order mark when cells hold non-Latin text,
+  and test for it before calling `trim()`, which removes it.
 
 ## Proper-name filtering contract
 

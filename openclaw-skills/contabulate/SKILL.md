@@ -53,6 +53,8 @@ For complex Contabulate work involving corpus generation, Unicode/tokenization, 
 
 ## GitHub Pages HTTPS playbook
 
+For a new site, order the steps so GitHub's first domain check succeeds: create the Cloudflare DNS record (DNS-only CNAME to `brainheart.github.io`), confirm it resolves with `dig`, and only then enable Pages with the custom domain. GitHub requests the certificate when the domain is set and DNS already points at it; if that first check misses, issuance sits in an unobservable retry queue for an hour or more. Push `docs/CNAME` after DNS resolves, or set the domain through the Pages API at that point.
+
 When a Contabulate custom domain shows browser HTTPS warnings:
 
 1. Confirm live cert:
@@ -73,7 +75,7 @@ When a Contabulate custom domain shows browser HTTPS warnings:
    dig +short CAA "$HOST" @1.1.1.1
    ```
 4. Check no duplicate repo claims the same CNAME.
-5. If GitHub is stuck on the generic `*.github.io` cert, do a clean reset: remove custom domain, wait for Pages to build with no CNAME, re-add it, then watch.
+5. If GitHub is stuck on the generic `*.github.io` cert, do a clean reset: remove custom domain, wait for Pages to build with no CNAME, re-add it, then watch. Poll `pages/builds/latest` until the no-domain build reports `built` before re-adding; re-adding while that build is still running or errored leaves the certificate unrequested. After a clean reset with DNS in place the certificate is normally approved within a minute.
 6. If still stuck in `authorization_created`, Cloudflare proxied mode can be a reversible fallback for the single subdomain. Record clearly that this is Cloudflare-edge HTTPS, not GitHub cert recovery.
 
 Use `scripts/github-pages-https-rescue.sh` for steps 1-6 when appropriate.
