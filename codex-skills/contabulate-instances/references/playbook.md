@@ -169,6 +169,42 @@ Verified 2026-11-10 in `quran-contabulate`:
 - Prefix CSV downloads with a byte-order mark when cells hold non-Latin text,
   and test for it before calling `trim()`, which removes it.
 
+## English lookup for non-English instances
+
+Verified 2026-11-10 in `quran-contabulate` (first) and `gnt-contabulate`.
+
+Readers without the corpus language get a lookup box above the term field
+(English word in, corpus words out, inserted as ordinary search terms) and
+English gloss and dictionary-form columns in the word views. The page side is
+shared; the data side is per instance.
+
+- **Page.** `docs/js/glossary.js` is identical in every instance: copy it,
+  never fork it. `scripts/port_lookup.py INSTANCE --donor DONOR --language
+  Greek --lang grc` patches `docs/index.html` and `docs/css/main.css` and
+  copies the module. Run it with `--check` first; it refuses a shell whose
+  anchors differ. It also adds the long-header shortening (hover shows the
+  whole term, a more/less toggle expands it).
+- **Data.** The build writes `docs/data/glossary.json`:
+  `meta {lang, dir}`; `forms {form: [count, [glosses], [lemma indexes]]}` with
+  exactly the keys of `tokens.json`; `lemmas [{lemma, pos, root?, n, def?,
+  en [example glosses], w [[english word, weight]], forms [[form, count]]}]`
+  sorted by `n`. `w` drives the lookup's ranking; weight a lemma's first-sense
+  words in full and later senses less.
+- **Sources.** Prefer an analysis of the same edition (lemma per word) so the
+  alignment is exact, plus a public-domain or share-alike lexicon for glosses.
+  Read API and repository terms before using a source: an API that forbids
+  redistributing its data cannot feed a public static site. Pin every file by
+  commit and SHA-256, credit it on the sources page, and say what a gloss is
+  (a dictionary gloss of the lemma, or a contextual gloss of the word).
+- **Honesty.** The aids are display-only: never indexed, never counted, and
+  the page must work with `glossary.json` missing (test this by blocking the
+  request). A lookup inserts a regex built from the instance's own vocabulary;
+  test that every lemma's pattern matches exactly its forms, and show how many
+  other words written the same way a pattern also catches.
+- **Tests.** Copy `tests/glossary.spec.js` from a ported instance and edit its
+  `CFG` block. The pager is hidden when a result fits one page, so helpers
+  must not assume the page-size control is visible.
+
 ## Proper-name filtering contract
 
 Treat “Hide proper names” as a corpus-data capability, not a generic row-table
