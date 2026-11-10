@@ -167,6 +167,20 @@ def patches(language, lang, direction):
     ]
 
 
+CELL = "        const td = document.createElement('td');\n"
+CELL_KEY = "        td.dataset.key = k;\n"
+
+
+def ensure_cell_keys(html):
+    """Older shells do not label body cells with their column key. The gloss
+    columns shift positions, so tests and styles address cells by key."""
+    if "td.dataset.key = k;" in html:
+        return html, False
+    if html.count(CELL) != 1:
+        raise ValueError("cannot label table cells: unexpected cell-creation code")
+    return html.replace(CELL, CELL + CELL_KEY), True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("instance", type=Path)
@@ -180,8 +194,13 @@ def main():
     index = args.instance / "docs/index.html"
     css = args.instance / "docs/css/main.css"
     html = index.read_text(encoding="utf-8")
+    html, labelled = ensure_cell_keys(html)
     if 'id="lexicon"' in html:
-        print("Lookup already present; nothing to do.")
+        if labelled and not args.check:
+            index.write_text(html, encoding="utf-8")
+            print("Lookup already present; labelled table cells with their column keys.")
+        else:
+            print("Lookup already present; nothing to do.")
         return 0
     problems = []
     for anchor, replacement in patches(args.language, args.lang, args.dir):
