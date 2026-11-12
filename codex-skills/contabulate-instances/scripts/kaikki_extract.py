@@ -37,26 +37,94 @@ LEXICAL_POS = {
 
 
 def normalize(word, language):
-    """The spelling under which a form is looked up. Mirrors the instance's
-    own search form as far as letters go: case and diacritics are dropped;
-    Latin also reads j as i and writes out the ligatures."""
+    """The spelling under which a form is looked up. Case never counts.
+    Latin: no macrons, j read as i, ligatures written out. Italian: the
+    diaeresis that marks scansion is dropped, written accents are kept.
+    German: as written (umlauts and eszett are letters). Ancient Greek:
+    accents and breathings kept, a grave read as an acute, vowel-length
+    marks dropped."""
     text = unicodedata.normalize("NFD", word.lower())
     if language == "la":
         text = "".join(c for c in text if not unicodedata.combining(c))
         text = text.replace("j", "i").replace("æ", "ae").replace("œ", "oe")
     elif language == "it":
-        # Accents distinguish words in Italian; keep them, but compose.
-        pass
+        text = text.replace("\u0308", "")
+    elif language == "grc":
+        text = text.replace("\u0300", "\u0301").replace("\u0304", "").replace("\u0306", "")
+        text = text.replace("\u1fbd", "'").replace("\u02bc", "'").replace("\u2019", "'")
     return unicodedata.normalize("NFC", text)
 
 
+ACUTE_TO_GRAVE = str.maketrans("áíóú", "àìòù")
+
+
 def candidates(token, language):
-    """Lookup keys for a token: itself, then without an enclitic."""
+    """Lookup keys for a token, most literal first."""
     keys = [normalize(token, language)]
     for enclitic in ENCLITICS.get(language, ()):
         if keys[0].endswith(enclitic) and len(keys[0]) > len(enclitic) + 1:
             keys.append(keys[0][: -len(enclitic)])
+    if language == "it":
+        # Editions differ on acute and grave; elided words are entered with
+        # their apostrophe (l', ch', d').
+        swapped = keys[0].translate(ACUTE_TO_GRAVE)
+        if swapped != keys[0]:
+            keys.append(swapped)
+        # An elided word (l', ch', quell') loses its apostrophe in the index.
+        # A token with no vowel can only be elided; any other is first taken
+        # as written and as elided only if the dictionary lacks it.
+        elided = keys[0] + "'"
+        if not any(c in "aeiouàèéìòù" for c in keys[0]):
+            keys = [elided] + keys
+        else:
+            keys.append(elided)
+    if language == "grc":
+        # An enclitic can throw a second accent onto the word before it
+        # (ἔλεός); the dictionary has it with one.
+        nfd = unicodedata.normalize("NFD", keys[0])
+        accents = [i for i, c in enumerate(nfd) if c in "\u0301\u0342"]
+        if len(accents) > 1:
+            keys.append(unicodedata.normalize("NFC", nfd[:accents[-1]] + nfd[accents[-1] + 1:]))
+        # An elided word (δ', ἀλλ', ἐπ') loses its apostrophe in the index.
+        if keys[0][-1:] in "βγδθλμπτφχ" or (len(keys[0]) > 1 and keys[0][-1:] in "κ" and keys[0] not in ("ἐκ", "οὐκ")):
+            keys = [keys[0] + "'"] + keys
+        elif len(keys[0]) <= 3:
+            keys.append(keys[0] + "'")  # δι' (διά), ἀπ' ... when the word itself is unknown
     return keys
+
+
+# "Diener: agent noun of dienen; servant" is tagged like an inflected form but
+# is a word in its own right.
+DERIVED_PREFIXES = (
+    "agent noun of", "female equivalent of", "male equivalent of", "diminutive of", "augmentative of",
+    "verbal noun of", "abstract noun of", "nominalization of", "nominalisation of", "endearing form of",
+    "pejorative of", "gerund of",
+)
+
+
+WEAK_TAGS = frozenset({
+    "obsolete", "archaic", "dated", "rare", "dialectal", "nonstandard", "misspelling", "poetic",
+    "uncommon", "proscribed", "historical",
+})
+
+
+def derived_gloss(sense):
+    """The meaning of a derived word entered as "X of Y; meaning", or None."""
+    texts = sense.get("glosses") or ()
+    if not texts or not texts[-1].lower().startswith(DERIVED_PREFIXES):
+        return None
+    for target in sense.get("form_of") or sense.get("alt_of") or ():
+        if target.get("extra"):
+            return clean_gloss(target["extra"])
+    text = texts[-1]
+    return clean_gloss(text.split(";", 1)[1]) if ";" in text else clean_gloss(text)
+
+
+def target_word(target):
+    """The word a form-of note points to. Notes run on ("avere and", "in il",
+    "grande m or f by sense"); the word is what comes first."""
+    words = (target.get("word") or "").strip().split()
+    return words[0].strip(",;:.") if words else ""
 
 
 def clean_gloss(gloss):
@@ -71,7 +139,7 @@ def is_plain_form(form):
 def extract(dictionary_path, tokens, language, max_glosses=4, max_hops=3):
     wanted = set()
     for token in tokens:
-        wanted.update(candidates(token, language))
+        wanted.update(key.replace("’", "'") for key in candidates(token, language))
     direct = defaultdict(list)         # wanted form -> [(normalized word, pos)] it is, or is listed under
     listed_as_variant = set()          # (wanted form, node) pairs that come from an "alternative form" listing
     parents = defaultdict(list)        # (normalized word, pos) -> [(normalized target, pos, is variant)]
@@ -86,19 +154,32 @@ def extract(dictionary_path, tokens, language, max_glosses=4, max_hops=3):
             pos = entry.get("pos") or ""
             if not word or pos not in LEXICAL_POS or not is_plain_form(word):
                 continue
-            key = normalize(word, language)
+            if word.isupper() and len(word) <= 3:
+                continue  # abbreviations (IM, CH) that collide with short words once case is ignored
+            key = normalize(word, language).replace("’", "'")
             node = (key, pos)
             if key in wanted and node not in direct[key]:
                 direct[key].append(node)
             for sense in entry.get("senses", ()):
-                variant = not sense.get("form_of") and bool(sense.get("alt_of"))
+                # A variant spelling, or a form the dictionary marks as no
+                # longer or not generally used, is weak evidence that a
+                # spelling is that word here.
+                variant = (not sense.get("form_of") and bool(sense.get("alt_of"))) or bool(
+                    WEAK_TAGS.intersection(sense.get("tags") or ()))
                 targets = sense.get("form_of") or sense.get("alt_of")
+                own_meaning = derived_gloss(sense) if targets else None
+                if own_meaning:
+                    if word not in spellings[node]:
+                        spellings[node].append(word)
+                    if own_meaning not in glosses[(word, pos)] and len(glosses[(word, pos)]) < max_glosses:
+                        glosses[(word, pos)].append(own_meaning)
+                    continue
                 if targets:
                     # "nobis" is a form of "nos", itself a form of "ego";
                     # "dicentes" of "dicens", a participle of "dico". Record
                     # the link and follow the chain afterwards.
                     for target in targets:
-                        lemma = normalize((target.get("word") or "").strip(), language)
+                        lemma = normalize(target_word(target), language).replace("’", "'")
                         if lemma and lemma != key and (lemma, pos, variant) not in parents[node]:
                             parents[node].append((lemma, pos, variant))
                     continue
@@ -113,7 +194,7 @@ def extract(dictionary_path, tokens, language, max_glosses=4, max_hops=3):
             for form in entry.get("forms", ()):
                 text = form.get("form") or ""
                 tags = form.get("tags") or ()
-                if not is_plain_form(text) or "table-tags" in tags or "inflection-template" in tags:
+                if not is_plain_form(text) or "table-tags" in tags or "inflection-template" in tags or "auxiliary" in tags:
                     continue
                 form_key = normalize(text, language)
                 if form_key in wanted and form_key != key:
@@ -124,6 +205,10 @@ def extract(dictionary_path, tokens, language, max_glosses=4, max_hops=3):
                     elif "alternative" not in tags:
                         listed_as_variant.discard((form_key, node))
 
+    nodes_by_key = defaultdict(list)
+    for known in set(spellings) | set(parents):
+        nodes_by_key[known[0]].append(known)
+
     def dictionary_words(node, hops=0, seen=(), variant=False):
         """Entries with a meaning of their own that a node leads to, each
         with whether a variant spelling lies on the way. A node that only
@@ -132,9 +217,15 @@ def extract(dictionary_path, tokens, language, max_glosses=4, max_hops=3):
             return []
         found = [((word, node[1]), variant) for word in spellings.get(node, ())]
         for target, pos, is_variant in parents.get(node, ()):
-            for answer in dictionary_words((target, pos), hops + 1, seen + (node,), variant or is_variant):
-                if answer[0] not in [f[0] for f in found]:
-                    found.append(answer)
+            # A contraction points to a preposition, a participle to a verb:
+            # where the target is not entered under the same part of speech,
+            # take it under whichever it has.
+            same = (target, pos)
+            targets = [same] if (same in spellings or same in parents) else nodes_by_key.get(target, [])
+            for next_node in targets:
+                for answer in dictionary_words(next_node, hops + 1, seen + (node,), variant or is_variant):
+                    if answer[0] not in [f[0] for f in found]:
+                        found.append(answer)
         return found
 
     out_forms = {}
@@ -169,7 +260,7 @@ def main():
 
     tokens = list(json.loads(args.tokens.read_text(encoding="utf-8")))
     forms, lemmas, entries = extract(args.dictionary, tokens, args.language)
-    covered = sum(1 for t in tokens if any(k in forms for k in candidates(t, args.language)))
+    covered = sum(1 for t in tokens if any(k.replace("’", "'") in forms for k in candidates(t, args.language)))
     payload = {
         "source": {
             "name": "English Wiktionary via kaikki.org (Wiktextract)",

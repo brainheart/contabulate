@@ -201,6 +201,22 @@ shared; the data side is per instance.
   request). A lookup inserts a regex built from the instance's own vocabulary;
   test that every lemma's pattern matches exactly its forms, and show how many
   other words written the same way a pattern also catches.
+- **Dictionary-only languages.** Where no word-by-word analysis exists, use
+  `kaikki_extract.py` on kaikki.org's Wiktionary dump and copy
+  `wiktionary_glossary.py` in as `scripts/glossary.py` (set `LANGUAGE`,
+  `EXTRACT_SHA256`). It files each spelling under its likeliest headword by
+  expectation-maximization and reports shared spellings (`amb`). Language
+  rules live in `normalize`/`candidates` (Latin j/i and ligatures, Italian
+  elision, German pre-1996 ß spellings read as their reformed spelling, Greek
+  grave-as-acute, enclitic accents, elision, article forms owned by ὁ). Greek
+  merges parts of speech per headword; German keeps them apart (sein "to be"
+  vs sein "his"). For Greek, `merge_morphgnt.py` fills Wiktionary's gaps from
+  the Greek New Testament instance's analysis. Verified 2026-11-12 on Kafka,
+  Septuagint, Xenophon, Thucydides; Vulgate, Aeneid, Dante, Luther carry
+  earlier copies of the same scripts.
+- **Deploys.** A Pages build can sit queued for days. Check
+  `gh run list -R brainheart/<repo>`; cancel a stuck run and request a new
+  build with `gh api -X POST repos/brainheart/<repo>/pages/builds`.
 - **Tests.** Copy `tests/glossary.spec.js` from a ported instance and edit its
   `CFG` block. The pager is hidden when a result fits one page, so helpers
   must not assume the page-size control is visible.
